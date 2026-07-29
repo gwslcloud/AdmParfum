@@ -3,143 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Assinatura Parfum - Luxury Admin</title>
+    <title>Dashboard Privé - Assinatura Parfum</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
-        :root { --verde: #00160f; --verde-card: #001f15; --dourado: #c5a059; --dourado-claro: #e2c275; }
+        :root { --verde: #00160f; --verde-claro: #002b1d; --dourado: #c5a059; --dourado-claro: #fcf6ba; }
         
         body { 
             font-family: 'Montserrat', sans-serif; 
             background-color: var(--verde); 
             color: white;
-            background-image: radial-gradient(circle at top right, #002b1d, var(--verde));
+            background-image: url('data:image/svg+xml,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>'), 
+                             radial-gradient(circle at top right, var(--verde-claro), var(--verde));
             background-attachment: fixed;
             min-height: 100vh;
         }
 
         .font-luxury { font-family: 'Cinzel', serif; }
 
-        /* Estilo Vidro (Glassmorphism) */
         .glass { 
             background: rgba(255, 255, 255, 0.02); 
-            backdrop-filter: blur(15px); 
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(197, 160, 89, 0.2); 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(197, 160, 89, 0.15); 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
         }
 
-        /* Inputs Premium */
-        input, textarea, select { 
-            background: rgba(0,0,0,0.3) !important; 
+        input, textarea { 
+            background: rgba(0,0,0,0.5) !important; 
             border: 1px solid rgba(197, 160, 89, 0.1) !important; 
-            color: white !important; 
-            padding: 14px; 
-            border-radius: 8px; 
-            font-size: 14px;
-            width: 100%;
-            transition: all 0.3s;
+            color: white !important; padding: 12px; border-radius: 10px; font-size: 14px; width: 100%; transition: 0.3s;
         }
         input:focus { border-color: var(--dourado) !important; outline: none; box-shadow: 0 0 15px rgba(197, 160, 89, 0.2); }
 
         .btn-gold { 
             background: linear-gradient(135deg, #c5a059 0%, #fcf6ba 50%, #b38728 100%); 
             color: #00160f; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
-            transition: 0.3s; cursor: pointer;
+            transition: 0.4s; cursor: pointer; border: none;
         }
-        .btn-gold:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 10px 20px rgba(197, 160, 89, 0.3); }
+        .btn-gold:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 10px 20px rgba(197, 160, 89, 0.4); }
 
-        .btn-danger { background: rgba(255, 0, 0, 0.1); border: 1px solid red; color: red; font-size: 10px; font-weight: bold; cursor: pointer; }
-        .btn-danger:hover { background: red; color: white; }
+        .sync-btn {
+            background: rgba(197, 160, 89, 0.1);
+            border: 1px solid var(--dourado);
+            color: var(--dourado);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 10px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        .sync-btn:hover { background: var(--dourado); color: black; }
 
-        /* Custom Scroll */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: var(--dourado); border-radius: 10px; }
+        /* Lógica do Giro */
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .spinning { animation: spin 1s linear infinite; }
 
-        .active-tab { border-bottom: 2px solid var(--dourado); color: var(--dourado); }
-        
         .card-perfume {
-            background: var(--verde-card);
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: 0.4s;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(197, 160, 89, 0.05);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .card-perfume:hover { border-color: var(--dourado); transform: scale(1.02); }
+        .card-perfume:hover { border-color: var(--dourado); transform: scale(1.03); background: rgba(197, 160, 89, 0.05); }
 
-        .badge-gold { background: var(--dourado); color: black; font-size: 8px; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
+        .badge-best { background: var(--dourado); color: #000; font-size: 9px; font-weight: 900; padding: 2px 8px; border-radius: 4px; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 md:p-10">
 
     <!-- LOGIN SCREEN -->
-    <div id="loginOverlay" class="fixed inset-0 bg-[#000c08] z-[9999] flex items-center justify-center p-6">
-        <div class="glass p-10 rounded-[40px] w-full max-w-sm text-center">
-            <h2 class="font-luxury text-3xl text-[#c5a059] tracking-widest mb-2 uppercase">Privé</h2>
-            <p class="text-[10px] text-gray-500 uppercase tracking-[4px] mb-8">Administração de Luxo</p>
-            <input type="password" id="pass" placeholder="CHAVE DE ACESSO" class="text-center tracking-[10px] mb-6 !bg-black/50">
-            <button onclick="login()" class="btn-gold w-full py-4 rounded-xl">Autenticar</button>
+    <div id="loginOverlay" class="fixed inset-0 bg-[#00120b] z-[9999] flex items-center justify-center p-6">
+        <div class="glass p-12 rounded-[50px] w-full max-w-sm text-center shadow-2xl">
+            <h2 class="font-luxury text-3xl text-[#c5a059] tracking-[10px] mb-2 uppercase">Privé</h2>
+            <p class="text-[9px] text-gray-500 uppercase tracking-[4px] mb-12">Assinatura Parfum Admin</p>
+            <input type="password" id="pass" placeholder="CHAVE MESTRA" class="text-center tracking-[10px] mb-8 !bg-black/50">
+            <button onclick="login()" class="btn-gold w-full py-5 rounded-2xl text-xs">Desbloquear Painel</button>
         </div>
     </div>
 
     <!-- MAIN APP -->
     <div id="app" class="hidden max-w-7xl mx-auto">
-        <header class="flex justify-between items-center mb-12 border-b border-white/10 pb-6">
-            <div>
-                <h1 class="font-luxury text-2xl tracking-tighter">Assinatura <span class="text-[#c5a059]">Admin</span></h1>
-                <p class="text-[9px] text-gray-500 uppercase tracking-widest">Painel de Controle de Inventário</p>
+        <header class="flex justify-between items-center mb-16 border-b border-[#c5a059]/20 pb-8">
+            <div class="flex items-center gap-4">
+                <div class="w-1 h-12 bg-[#c5a059]"></div>
+                <div>
+                    <h1 class="font-luxury text-3xl tracking-widest">ASSINATURA <span class="text-[#c5a059]">ADMIN</span></h1>
+                    <p class="text-[9px] text-gray-500 uppercase tracking-widest">Gestão de Alta Perfumaria</p>
+                </div>
             </div>
-            <button onclick="location.reload()" class="text-[#c5a059] text-[10px] font-bold border border-[#c5a059] px-4 py-2 rounded-full">SINCRONIZAR</button>
+            
+            <div class="flex items-center gap-4">
+                <button onclick="loadData()" class="sync-btn" id="mainSyncBtn">
+                    <svg id="syncIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                    SINCRONIZAR NUVEM
+                </button>
+                <button onclick="logout()" class="text-red-500 text-[10px] font-bold uppercase tracking-widest opacity-50 hover:opacity-100 transition">Sair</button>
+            </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
             
             <!-- FORMULÁRIO -->
             <div class="lg:col-span-5">
-                <div class="glass p-8 rounded-[30px] sticky top-8">
-                    <h2 id="formTitle" class="font-luxury text-[#c5a059] text-xl mb-6 border-b border-white/5 pb-2">GERENCIAR FRAGRÂNCIA</h2>
-                    <form id="perfumeForm" class="space-y-4">
+                <div class="glass p-10 rounded-[40px] sticky top-10 border-[#c5a059]/30">
+                    <h2 id="formTitle" class="font-luxury text-[#c5a059] text-xl mb-8 border-b border-white/5 pb-4 tracking-widest uppercase">Editor de Luxo</h2>
+                    <form id="perfumeForm" class="space-y-6">
                         <input type="hidden" id="id">
                         
                         <div class="grid grid-cols-2 gap-4">
-                            <div><label class="text-[10px] text-gray-500">ID ÚNICO</label><input type="text" id="idDisp" readonly class="opacity-50"></div>
-                            <div><label class="text-[10px] text-gray-500">MARCA</label><input type="text" id="marca" required></div>
+                            <input type="text" id="marca" placeholder="MARCA / GRIFE" required>
+                            <input type="text" id="origem" placeholder="ORIGEM">
                         </div>
 
-                        <div><label class="text-[10px] text-gray-500">NOME DO PERFUME</label><input type="text" id="nome" required></div>
+                        <input type="text" id="nome" placeholder="NOME DA FRAGRÂNCIA" required>
 
-                        <div class="grid grid-cols-3 gap-2">
-                            <div><label class="text-[10px] text-gray-500">PREÇO</label><input type="number" step="0.01" id="preco" required></div>
-                            <div><label class="text-[10px] text-gray-500">PROMO</label><input type="number" step="0.01" id="promocao"></div>
-                            <div><label class="text-[10px] text-gray-500">ORIGEM</label><input type="text" id="origem"></div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="number" step="0.01" id="preco" placeholder="PREÇO DE VENDA" required>
+                            <input type="number" step="0.01" id="promocao" placeholder="OFERTA (OPCIONAL)">
                         </div>
 
-                        <div>
-                            <label class="text-[10px] text-gray-500">URL DA IMAGEM</label>
-                            <input type="text" id="imagem" oninput="document.getElementById('previewImg').src=this.value">
+                        <input type="text" id="imagem" placeholder="LINK DA IMAGEM (URL)" oninput="document.getElementById('previewImg').src=this.value">
+                        
+                        <div class="glass p-6 rounded-2xl text-center border-dashed border-[#c5a059]/20 border-2">
+                            <img id="previewImg" src="" class="h-40 w-full object-contain mx-auto rounded-xl">
                         </div>
 
-                        <!-- DNA OLFATIVO (0-100) -->
-                        <div class="bg-black/20 p-4 rounded-xl border border-white/5">
-                            <p class="text-[9px] text-[#c5a059] font-bold mb-3 tracking-widest">DNA DA FRAGRÂNCIA (%)</p>
-                            <div class="grid grid-cols-4 gap-2">
-                                <div><label class="text-[8px] text-gray-400">DOCE</label><input type="number" id="doce" value="0"></div>
-                                <div><label class="text-[8px] text-gray-400">AMAD.</label><input type="number" id="amadeirado" value="0"></div>
-                                <div><label class="text-[8px] text-gray-400">CITR.</label><input type="number" id="citrico" value="0"></div>
-                                <div><label class="text-[8px] text-gray-400">ESPIC.</label><input type="number" id="especiado" value="0"></div>
+                        <div class="bg-black/30 p-6 rounded-[25px] border border-white/5">
+                            <p class="text-[9px] text-[#c5a059] font-bold mb-4 tracking-widest uppercase">DNA do Perfume (%)</p>
+                            <div class="grid grid-cols-4 gap-3">
+                                <div><label class="text-[8px] text-gray-500">DOCE</label><input type="number" id="doce" value="0"></div>
+                                <div><label class="text-[8px] text-gray-500">AMAD.</label><input type="number" id="amadeirado" value="0"></div>
+                                <div><label class="text-[8px] text-gray-500">CITR.</label><input type="number" id="citrico" value="0"></div>
+                                <div><label class="text-[8px] text-gray-500">ESPIC.</label><input type="number" id="especiado" value="0"></div>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-4 py-2">
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" id="maisVendido" class="w-4 h-4 accent-[#c5a059]">
-                                <span class="text-xs uppercase font-bold text-[#c5a059]">Mais Vendido ★</span>
-                            </label>
+                        <div class="flex items-center gap-4 glass p-4 rounded-xl">
+                            <input type="checkbox" id="maisVendido" class="w-6 h-6 accent-[#c5a059]">
+                            <span class="text-xs uppercase font-bold text-[#c5a059]">Destaque Vitrine ★</span>
                         </div>
 
-                        <div class="flex gap-2 pt-4">
-                            <button type="submit" id="saveBtn" class="btn-gold flex-1 py-4 rounded-xl">SALVAR ALTERAÇÕES</button>
-                            <button type="button" id="deleteBtn" class="btn-danger px-4 rounded-xl hidden" onclick="excluirPerfume()">EXCLUIR</button>
+                        <div class="flex gap-4 pt-4">
+                            <button type="submit" id="saveBtn" class="btn-gold flex-1 py-5 rounded-2xl text-xs">Publicar Alterações</button>
+                            <button type="button" id="delBtn" class="bg-red-950/30 text-red-500 border border-red-500/30 px-6 rounded-2xl hidden text-[10px] font-bold" onclick="excluirPerfume()">EXCLUIR</button>
                         </div>
                     </form>
                 </div>
@@ -147,19 +158,18 @@
 
             <!-- LISTA -->
             <div class="lg:col-span-7">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="font-luxury text-lg uppercase tracking-widest">Coleção Privada</h2>
-                    <input type="text" id="search" onkeyup="filter()" placeholder="BUSCAR..." class="w-48 !py-2 !rounded-full !bg-white/5 text-xs text-center">
+                <div class="mb-10">
+                    <input type="text" id="search" onkeyup="filter()" placeholder="BUSCAR NA COLEÇÃO..." class="w-full !rounded-full !bg-white/5 text-center tracking-[4px] py-5 border-[#c5a059]/20">
                 </div>
 
-                <div id="productList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Cards via JS -->
+                <div id="productList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Cards dinâmicos -->
                 </div>
 
-                <div class="mt-8 flex justify-center gap-4">
-                    <button onclick="prevPage()" class="text-[10px] border border-white/20 px-4 py-2 rounded-full">ANTERIOR</button>
-                    <span id="pageInfo" class="text-xs self-center">PAG 1</span>
-                    <button onclick="nextPage()" class="text-[10px] border border-white/20 px-4 py-2 rounded-full">PRÓXIMA</button>
+                <div class="mt-12 flex justify-between items-center glass p-4 rounded-full px-8">
+                    <button onclick="prevPage()" class="text-[10px] text-[#c5a059] font-black tracking-widest uppercase">Anterior</button>
+                    <span id="pageInfo" class="text-xs font-bold text-gray-500 tracking-widest uppercase">Pág 1</span>
+                    <button onclick="nextPage()" class="text-[10px] text-[#c5a059] font-black tracking-widest uppercase">Próxima</button>
                 </div>
             </div>
         </div>
@@ -167,36 +177,59 @@
 
     <script>
         // --- CONFIGURAÇÃO ---
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzVHuQ8rcs_ca4WqLzpZJ0jmeNeTcMENg63qpKzJzP4EBkzwsYwbz03d10ZWhNMFxLQzw/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzFn1cM4jrZlSmzzeByhNy6HPSwUdU8lD-Ix9kAjBoMUiJqvfLCMtattLIh5OV9ZR0RNw/exec";
         const SENHA_MESTRA = "ticoeteco";
 
         let rawData = [];
         let filteredData = [];
         let currentPage = 1;
-        const itemsPerPage = 10;
+        const itemsPerPage = 12;
+
+        // --- LÓGICA DE LOGIN PERSISTENTE ---
+        window.onload = () => {
+            if (localStorage.getItem('ap_admin_auth') === 'true') {
+                showApp();
+            }
+        };
 
         function login() {
             if(document.getElementById('pass').value === SENHA_MESTRA) {
-                document.getElementById('loginOverlay').remove();
-                document.getElementById('app').classList.remove('hidden');
-                loadData();
-            } else { alert("Chave incorreta"); }
+                localStorage.setItem('ap_admin_auth', 'true');
+                showApp();
+            } else { alert("Acesso Negado."); }
         }
 
+        function logout() {
+            localStorage.removeItem('ap_admin_auth');
+            location.reload();
+        }
+
+        function showApp() {
+            document.getElementById('loginOverlay').remove();
+            document.getElementById('app').classList.remove('hidden');
+            loadData();
+        }
+
+        // --- CARREGAMENTO COM ANIMAÇÃO ---
         async function loadData() {
+            const icon = document.getElementById('syncIcon');
             const listDiv = document.getElementById('productList');
-            listDiv.innerHTML = "<p class='col-span-2 text-center py-20 animate-pulse'>Sincronizando com a nuvem...</p>";
+            
+            icon.classList.add('spinning');
+            listDiv.innerHTML = "<p class='col-span-full text-center py-20 text-[#c5a059] font-luxury animate-pulse'>Acessando Banco de Dados Privado...</p>";
             
             try {
                 const res = await fetch(WEB_APP_URL);
                 const data = await res.json();
                 
-                // Filtra linhas vazias
-                rawData = data.slice(1).filter(row => row[3]).reverse();
+                // Filtra apenas o que tem nome e marca
+                rawData = data.slice(1).filter(row => row[3] && row[1]).reverse();
                 filteredData = [...rawData];
                 renderList();
             } catch (e) {
-                listDiv.innerHTML = "<p class='col-span-2 text-center text-red-500'>Erro ao carregar banco de dados.</p>";
+                listDiv.innerHTML = "<p class='col-span-full text-center text-red-500'>Erro na conexão. Verifique o Script Google.</p>";
+            } finally {
+                icon.classList.remove('spinning');
             }
         }
 
@@ -205,63 +238,66 @@
             listDiv.innerHTML = "";
             
             const start = (currentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const items = filteredData.slice(start, end);
+            const paginatedItems = filteredData.slice(start, start + itemsPerPage);
 
-            items.forEach(row => {
+            paginatedItems.forEach(row => {
                 const card = document.createElement('div');
-                card.className = "card-perfume p-4 rounded-2xl flex items-center gap-4 cursor-pointer relative";
+                card.className = "card-perfume p-5 rounded-[25px] flex items-center gap-5 cursor-pointer relative fade-in";
                 card.onclick = () => fillForm(row);
                 
-                const isBest = row[8] == "1" ? '<span class="badge-gold absolute top-2 right-2">★ TOP</span>' : '';
+                const badge = row[8] == "1" ? '<span class="badge-best absolute top-3 right-3">DESTAQUE</span>' : '';
                 
                 card.innerHTML = `
-                    <img src="${row[6]}" class="w-14 h-14 object-contain bg-white/5 rounded-lg">
-                    <div class="flex-1 overflow-hidden">
-                        <p class="text-[8px] text-[#c5a059] uppercase font-bold">${row[1]}</p>
-                        <h4 class="text-xs font-bold truncate">${row[3]}</h4>
-                        <p class="text-[10px] text-gray-400">ID: ${row[0]} | R$ ${row[4]}</p>
+                    <div class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center p-2">
+                        <img src="${row[6] || 'assinatura.png'}" class="max-h-full object-contain">
                     </div>
-                    ${isBest}
+                    <div class="flex-1 overflow-hidden">
+                        <p class="text-[9px] text-[#c5a059] font-black uppercase tracking-widest">${row[1]}</p>
+                        <h4 class="text-sm font-bold truncate text-white">${row[3]}</h4>
+                        <p class="text-[11px] text-gray-500 font-luxury">R$ ${row[4]}</p>
+                    </div>
+                    ${badge}
                 `;
                 listDiv.appendChild(card);
             });
-            document.getElementById('pageInfo').innerText = `PÁGINA ${currentPage}`;
+            document.getElementById('pageInfo').innerText = `Pág ${currentPage}`;
         }
 
         function fillForm(row) {
             document.getElementById('id').value = row[0];
-            document.getElementById('idDisp').value = row[0];
             document.getElementById('marca').value = row[1];
             document.getElementById('origem').value = row[2];
             document.getElementById('nome').value = row[3];
             document.getElementById('preco').value = row[4];
             document.getElementById('promocao').value = row[5];
             document.getElementById('imagem').value = row[6];
+            document.getElementById('previewImg').src = row[6];
             document.getElementById('maisVendido').checked = row[8] == "1";
             document.getElementById('doce').value = row[13] || 0;
             document.getElementById('amadeirado').value = row[14] || 0;
             document.getElementById('citrico').value = row[15] || 0;
             document.getElementById('especiado').value = row[16] || 0;
             
-            document.getElementById('formTitle').innerText = "EDITANDO FRAGRÂNCIA";
-            document.getElementById('deleteBtn').classList.remove('hidden');
+            document.getElementById('formTitle').innerText = "Editor Premium";
+            document.getElementById('delBtn').classList.remove('hidden');
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         function clearForm() {
             document.getElementById('perfumeForm').reset();
             document.getElementById('id').value = "";
-            document.getElementById('formTitle').innerText = "GERENCIAR FRAGRÂNCIA";
-            document.getElementById('deleteBtn').classList.add('hidden');
+            document.getElementById('previewImg').src = "";
+            document.getElementById('formTitle').innerText = "Editor de Luxo";
+            document.getElementById('delBtn').classList.add('hidden');
         }
 
         document.getElementById('perfumeForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('saveBtn');
-            btn.disabled = true; btn.innerText = "GRAVANDO...";
+            const icon = document.getElementById('syncIcon');
+            btn.disabled = true; btn.innerText = "SINCRONIZANDO...";
+            icon.classList.add('spinning');
 
-            // Se for novo, gera ID
             if(!document.getElementById('id').value) {
                 const maxId = rawData.length > 0 ? Math.max(...rawData.map(r => parseInt(r[0]))) : 0;
                 document.getElementById('id').value = maxId + 1;
@@ -284,18 +320,21 @@
             };
 
             await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(body) });
-            alert("Sincronizado com sucesso!");
-            location.reload();
+            alert("Sincronizado com a Nuvem!");
+            await loadData();
+            clearForm();
+            btn.disabled = false; btn.innerText = "Publicar Alterações";
         };
 
         async function excluirPerfume() {
-            if(!confirm("Tem certeza que deseja apagar este perfume da planilha?")) return;
+            if(!confirm("Deseja banir esta fragrância do inventário?")) return;
             const id = document.getElementById('id').value;
-            const body = { id: id, action: 'delete' };
+            const icon = document.getElementById('syncIcon');
+            icon.classList.add('spinning');
             
-            await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(body) });
-            alert("Excluído!");
-            location.reload();
+            await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({id: id, action: 'delete'}) });
+            await loadData();
+            clearForm();
         }
 
         function filter() {
