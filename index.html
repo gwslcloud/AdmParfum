@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Assinatura Parfum</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --verde: #00160f; --dourado: #c5a059; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--verde); color: white; }
+        .font-luxury { font-family: 'Cinzel', serif; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(197, 160, 89, 0.2); }
+        input, textarea { background: rgba(0,0,0,0.5) !important; border: 1px solid rgba(197, 160, 89, 0.2) !important; color: white !important; padding: 8px; border-radius: 4px; width: 100%; font-size: 13px; }
+        label { color: var(--dourado); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        .btn-gold { background: linear-gradient(135deg, #c5a059 0%, #fcf6ba 50%, #b38728 100%); color: #00160f; font-weight: bold; cursor: pointer; }
+        .btn-gold:disabled { opacity: 0.5; cursor: not-allowed; }
+        #loginOverlay { position: fixed; inset: 0; background: var(--verde); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- LOGIN -->
+    <div id="loginOverlay">
+        <div class="glass p-8 rounded-lg w-full max-w-xs text-center">
+            <h2 class="font-luxury text-xl mb-6 text-[#c5a059]">ÁREA DO GESTOR</h2>
+            <input type="password" id="pass" placeholder="Senha" class="mb-4 text-center">
+            <button onclick="login()" class="btn-gold w-full py-2 rounded uppercase text-xs">Entrar</button>
+        </div>
+    </div>
+
+    <!-- CONTEÚDO -->
+    <div id="app" class="hidden">
+        <header class="p-4 glass flex justify-between items-center sticky top-0 z-50">
+            <h1 class="font-luxury text-[#c5a059]">ASSINATURA <span class="text-white">ADMIN</span></h1>
+            <button onclick="loadData()" class="text-[10px] border border-[#c5a059] px-3 py-1 rounded">SINCRONIZAR</button>
+        </header>
+
+        <main class="p-4 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- FORMULÁRIO -->
+            <div class="lg:col-span-5">
+                <form id="form" class="glass p-6 rounded-xl space-y-4">
+                    <h2 class="font-luxury text-[#c5a059] border-b border-white/10 pb-2">EDITAR / ADICIONAR</h2>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label>ID Linha</label><input type="text" id="id" required></div>
+                        <div><label>Marca</label><input type="text" id="marca" required></div>
+                    </div>
+
+                    <div><label>Nome do Perfume</label><input type="text" id="nome" required></div>
+
+                    <div class="grid grid-cols-3 gap-2">
+                        <div><label>Preço</label><input type="number" step="0.01" id="preco" required></div>
+                        <div><label>Promo</label><input type="number" step="0.01" id="promocao"></div>
+                        <div><label>Origem</label><input type="text" id="origem"></div>
+                    </div>
+
+                    <div>
+                        <label>Link da Imagem</label>
+                        <input type="text" id="imagem" oninput="document.getElementById('pre').src=this.value">
+                        <img id="pre" src="" class="h-20 mx-auto mt-2 rounded border border-[#c5a059]/20">
+                    </div>
+
+                    <div><label>Descrição</label><textarea id="descricao" class="h-16"></textarea></div>
+
+                    <div class="grid grid-cols-4 gap-2">
+                        <div><label>Doce</label><input type="number" id="doce" value="0"></div>
+                        <div><label>Amad.</label><input type="number" id="amadeirado" value="0"></div>
+                        <div><label>Citr.</label><input type="number" id="citrico" value="0"></div>
+                        <div><label>Espic.</label><input type="number" id="especiado" value="0"></div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="flex items-center gap-2"><input type="checkbox" id="maisVendido" class="w-4 h-4"><label>★</label></div>
+                        <div><label>Cupom</label><input type="text" id="cupom" class="!py-1"></div>
+                    </div>
+
+                    <button type="submit" id="saveBtn" class="btn-gold w-full py-4 rounded text-sm uppercase">Salvar na Planilha</button>
+                </form>
+            </div>
+
+            <!-- LISTA -->
+            <div class="lg:col-span-7">
+                <input type="text" id="search" onkeyup="filter()" placeholder="Procurar perfume..." class="mb-4">
+                <div id="list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[700px] overflow-y-auto pr-2">
+                    <!-- Cards aqui -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- CONFIGURAÇÃO ---
+        const WEB_APP_URL = "COLE_AQUI_A_URL_DO_PASSO_1";
+        const SENHA_ACESSO = "suasenha123";
+
+        function login() {
+            if(document.getElementById('pass').value === SENHA_ACESSO) {
+                document.getElementById('loginOverlay').remove();
+                document.getElementById('app').classList.remove('hidden');
+                loadData();
+            } else { alert("Senha errada"); }
+        }
+
+        async function loadData() {
+            const listDiv = document.getElementById('list');
+            listDiv.innerHTML = "<p class='col-span-2 text-center text-gray-500'>Buscando dados...</p>";
+            const res = await fetch(WEB_APP_URL);
+            const data = await res.json();
+            
+            listDiv.innerHTML = "";
+            data.slice(1).forEach(row => {
+                if(!row[3]) return;
+                const card = document.createElement('div');
+                card.className = "glass p-3 rounded-lg flex items-center gap-3 cursor-pointer hover:border-[#c5a059] item-card";
+                card.onclick = () => fill(row);
+                card.innerHTML = `
+                    <img src="${row[6]}" class="w-12 h-12 object-contain bg-white/5 rounded">
+                    <div class="overflow-hidden">
+                        <p class="text-[9px] text-[#c5a059] uppercase font-bold">${row[1]}</p>
+                        <p class="text-xs font-bold truncate">${row[3]}</p>
+                        <p class="text-[10px] text-gray-400">ID: ${row[0]} | R$ ${row[4]}</p>
+                    </div>
+                `;
+                listDiv.appendChild(card);
+            });
+        }
+
+        function fill(row) {
+            document.getElementById('id').value = row[0];
+            document.getElementById('marca').value = row[1];
+            document.getElementById('origem').value = row[2];
+            document.getElementById('nome').value = row[3];
+            document.getElementById('preco').value = row[4];
+            document.getElementById('promocao').value = row[5];
+            document.getElementById('imagem').value = row[6];
+            document.getElementById('pre').src = row[6];
+            document.getElementById('descricao').value = row[7];
+            document.getElementById('maisVendido').checked = row[8] == "1";
+            document.getElementById('cupom').value = row[12];
+            document.getElementById('doce').value = row[13];
+            document.getElementById('amadeirado').value = row[14];
+            document.getElementById('citrico').value = row[15];
+            document.getElementById('especiado').value = row[16];
+        }
+
+        document.getElementById('form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('saveBtn');
+            btn.disabled = true; btn.innerText = "GRAVANDO...";
+
+            const body = {
+                id: document.getElementById('id').value,
+                marca: document.getElementById('marca').value,
+                origem: document.getElementById('origem').value,
+                nome: document.getElementById('nome').value,
+                preco: document.getElementById('preco').value,
+                promocao: document.getElementById('promocao').value,
+                imagem: document.getElementById('imagem').value,
+                descricao: document.getElementById('descricao').value,
+                maisVendido: document.getElementById('maisVendido').checked ? "1" : "0",
+                notasTopo: "", notasCoracao: "", notasBase: "", // Opcional adicionar inputs para estes
+                cupom: document.getElementById('cupom').value,
+                doce: document.getElementById('doce').value,
+                amadeirado: document.getElementById('amadeirado').value,
+                citrico: document.getElementById('citrico').value,
+                especiado: document.getElementById('especiado').value
+            };
+
+            await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(body) });
+            
+            alert("Sucesso! A planilha será atualizada em instantes.");
+            btn.disabled = false; btn.innerText = "SALVAR NA PLANILHA";
+            loadData();
+        };
+
+        function filter() {
+            let val = document.getElementById('search').value.toLowerCase();
+            document.querySelectorAll('.item-card').forEach(c => {
+                c.style.display = c.innerText.toLowerCase().includes(val) ? "flex" : "none";
+            });
+        }
+    </script>
+</body>
+</html>
