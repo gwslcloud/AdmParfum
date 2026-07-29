@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Admin Parfum</title>
+    <title>Lux Admin Pro - Parfum</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -25,7 +25,6 @@
         .font-luxury { font-family: 'Cinzel', serif; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--borda-vidro); }
         
-        /* CORREÇÃO AQUI: Impede que o 'appearance: none' afete o checkbox */
         input:not([type="checkbox"]), textarea { 
             background: rgba(0,0,0,0.4) !important; 
             border: 1px solid var(--borda-vidro) !important; 
@@ -39,7 +38,6 @@
             -webkit-appearance: none;
         }
 
-        /* Estilo específico para o checkbox aparecer corretamente */
         input[type="checkbox"] {
             cursor: pointer;
             width: 20px;
@@ -61,9 +59,9 @@
 <body>
 
     <div id="loginOverlay" class="fixed inset-0 bg-[#00160f] z-[9999] flex items-center justify-center">
-        <div class="glass p-10 rounded-[40px] w-full max-w-sm text-center">
-            <h1 class="font-luxury text-[#c5a059] text-4xl mb-4 tracking-[10px]">LOGIN</h1>
-            <input type="password" id="pass" placeholder="SENHA" class="text-center tracking-[10px] mb-6">
+        <div class="glass p-10 rounded-[40px] w-full max-sm:w-[90%] text-center">
+            <h1 class="font-luxury text-[#c5a059] text-4xl mb-4 tracking-[10px]">PRIVÉ</h1>
+            <input type="password" id="pass" placeholder="CHAVE MESTRA" class="text-center tracking-[10px] mb-6">
             <button onclick="login()" class="btn-gold w-full py-5 rounded-2xl text-sm">Entrar</button>
         </div>
     </div>
@@ -90,7 +88,7 @@
                     <h2 id="statTotal" class="text-3xl font-luxury text-white">0</h2>
                 </div>
                 <div class="glass p-4 rounded-[30px] overflow-hidden">
-                    <p class="text-[8px] text-[#c5a059] mb-2 uppercase font-bold tracking-widest">Maior estoque</p>
+                    <p class="text-[8px] text-[#c5a059] mb-2 uppercase font-bold tracking-widest">Top Marcas</p>
                     <div class="h-[80px]"><canvas id="brandBarChart"></canvas></div>
                 </div>
             </div>
@@ -99,8 +97,8 @@
                 <div class="lg:col-span-5">
                     <form id="perfumeForm" class="glass p-6 md:p-8 rounded-[35px] space-y-5">
                         <div class="flex justify-between items-center border-b border-white/5 pb-3">
-                            <h2 id="formTitle" class="font-luxury text-[#c5a059] text-lg uppercase tracking-wider">Adicionar/Editar</h2>
-                            <button type="button" onclick="clearForm()" class="text-[10px] text-gray-400 font-bold uppercase">Limpar</button>
+                            <h2 id="formTitle" class="font-luxury text-[#c5a059] text-lg uppercase tracking-wider">Gerenciar</h2>
+                            <button type="button" onclick="clearForm()" class="text-[10px] text-gray-400 font-bold uppercase">Limpar +</button>
                         </div>
                         <input type="hidden" id="id">
                         <div><label>Marca</label><input type="text" id="marca" required></div>
@@ -134,7 +132,6 @@
                             </div>
                             <div class="flex flex-col justify-between">
                                 <div><label>Cupom</label><input type="text" id="cupom"></div>
-                                <!-- Alterado para Label para facilitar o clique -->
                                 <label class="flex items-center justify-between glass p-3 rounded-xl mt-2 cursor-pointer">
                                     <span class="text-[9px] font-bold text-[#c5a059] uppercase">Mais Vendido</span>
                                     <input type="checkbox" id="maisVendido" class="accent-[#c5a059]">
@@ -215,18 +212,29 @@
             list.innerHTML = "";
             const paginated = filteredData.slice((currentPage-1)*itemsPerPage, currentPage*itemsPerPage);
             paginated.forEach((row) => {
+                const estoque = parseInt(row[17]) || 0;
+                const temOferta = row[5] && row[5] != "0" && row[5] != "";
+                const ehMaisVendido = row[8] == "1";
+                const indisponivel = estoque <= 0;
+
                 const div = document.createElement('div');
-                div.className = "card-perfume p-4 rounded-2xl flex items-center gap-4 glass relative";
+                div.className = `card-perfume p-4 rounded-2xl flex items-center gap-4 glass relative ${indisponivel ? 'opacity-60' : ''}`;
                 div.onclick = () => fillForm(row);
                 div.innerHTML = `
-                    ${row[8] == "1" ? '<span class="absolute top-2 right-2 bg-[#c5a059] text-[#00160f] text-[7px] font-black px-2 py-0.5 rounded-full uppercase">Mais Vendido</span>' : ''}
+                    <div class="absolute top-2 right-2 flex flex-col gap-1 items-end">
+                        ${ehMaisVendido ? '<span class="bg-[#c5a059] text-[#00160f] text-[7px] font-black px-2 py-0.5 rounded-full uppercase">Mais Vendido</span>' : ''}
+                        ${temOferta ? '<span class="bg-orange-500 text-white text-[7px] font-black px-2 py-0.5 rounded-full uppercase">Promoção</span>' : ''}
+                        ${indisponivel ? '<span class="bg-red-600 text-white text-[7px] font-black px-2 py-0.5 rounded-full uppercase">Esgotado</span>' : ''}
+                    </div>
                     <img src="${row[6]}" class="w-12 h-12 rounded-lg object-contain bg-white/5" onerror="this.src='https://via.placeholder.com/50'">
                     <div class="flex-1 min-w-0">
                         <p class="text-[8px] text-[#c5a059] font-bold uppercase">${row[1]}</p>
                         <h4 class="text-[10px] font-bold truncate uppercase text-white">${row[3]}</h4>
                         <div class="flex justify-between items-center mt-1">
                             <span class="text-[10px] text-white font-bold">R$ ${row[4]}</span>
-                            <span class="text-[8px] text-gray-400">ESTOQUE: ${row[17]}</span>
+                            <span class="text-[8px] ${indisponivel ? 'text-red-500 font-black' : 'text-gray-400'} uppercase">
+                                ${indisponivel ? 'INDISPONÍVEL' : 'QTD: ' + estoque}
+                            </span>
                         </div>
                     </div>`;
                 list.appendChild(div);
