@@ -12,7 +12,6 @@
     <style>
         :root { --verde-fundo: #00160f; --verde-card: #002419; --dourado: #c5a059; --borda-vidro: rgba(197, 160, 89, 0.2); }
         
-        /* Ajuste de cor para Mobile e Desktop ficarem iguais */
         body { 
             font-family: 'Montserrat', sans-serif; 
             color: white; 
@@ -26,7 +25,8 @@
         .font-luxury { font-family: 'Cinzel', serif; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--borda-vidro); }
         
-        input, textarea { 
+        /* CORREÇÃO AQUI: Impede que o 'appearance: none' afete o checkbox */
+        input:not([type="checkbox"]), textarea { 
             background: rgba(0,0,0,0.4) !important; 
             border: 1px solid var(--borda-vidro) !important; 
             color: white !important; 
@@ -36,6 +36,15 @@
             width: 100%; 
             font-size: 14px; 
             appearance: none;
+            -webkit-appearance: none;
+        }
+
+        /* Estilo específico para o checkbox aparecer corretamente */
+        input[type="checkbox"] {
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--dourado);
         }
 
         .btn-gold { background: linear-gradient(135deg, #c5a059, #fcf6ba, #b38728); color: #00160f; font-weight: 800; text-transform: uppercase; cursor: pointer; border:none; }
@@ -46,7 +55,6 @@
         
         label { display: block; font-size: 10px; color: #c5a059; margin-bottom: 6px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Ajuste específico para a Pirâmide no Mobile não cortar texto */
         .piramide-grid input { padding: 8px 4px !important; font-size: 11px !important; text-align: center; }
     </style>
 </head>
@@ -126,10 +134,11 @@
                             </div>
                             <div class="flex flex-col justify-between">
                                 <div><label>Cupom</label><input type="text" id="cupom"></div>
-                                <div class="flex items-center justify-between glass p-3 rounded-xl mt-2">
+                                <!-- Alterado para Label para facilitar o clique -->
+                                <label class="flex items-center justify-between glass p-3 rounded-xl mt-2 cursor-pointer">
                                     <span class="text-[9px] font-bold text-[#c5a059] uppercase">Mais Vendido</span>
-                                    <input type="checkbox" id="maisVendido" class="w-5 h-5 accent-[#c5a059]">
-                                </div>
+                                    <input type="checkbox" id="maisVendido" class="accent-[#c5a059]">
+                                </label>
                             </div>
                         </div>
 
