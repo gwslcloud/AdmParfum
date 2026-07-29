@@ -82,7 +82,6 @@
                             <div><label>Estoque</label><input type="number" id="quantidade" value="1"></div>
                         </div>
 
-                        <!-- NOTAS OLFATIVAS AMPLIADAS -->
                         <div class="p-5 bg-black/20 rounded-2xl border border-white/5 space-y-4">
                             <p class="text-[11px] text-[#c5a059] font-bold tracking-widest uppercase">Notas Olfativas</p>
                             <div class="grid grid-cols-3 gap-3">
@@ -128,7 +127,6 @@
                         <button onclick="nextPage()" class="text-[10px] text-[#c5a059] font-bold uppercase">Próxima</button>
                     </div>
                 </div>
-
             </div>
         </main>
     </div>
@@ -231,12 +229,18 @@
             const btn = document.getElementById('saveBtn');
             btn.disabled = true; btn.innerText = "Sincronizando...";
 
-            // LIMPEZA DOS VALORES: Envia apenas o número inteiro (sem R$, sem ponto, sem vírgula)
             const cleanValue = (val) => val.split(',')[0].replace(/\D/g, '');
+
+            // LOGICA ID SEQUENCIAL
+            let nextId = 1;
+            if (rawData.length > 0) {
+                const ids = rawData.map(r => parseInt(r[0])).filter(n => !isNaN(n));
+                nextId = ids.length > 0 ? Math.max(...ids) + 1 : 1;
+            }
 
             const payload = {
                 action: 'save',
-                id: document.getElementById('id').value || Date.now().toString(),
+                id: document.getElementById('id').value || nextId.toString(),
                 marca: document.getElementById('marca').value,
                 nome: document.getElementById('nome').value,
                 preco: cleanValue(document.getElementById('preco').value),
@@ -257,7 +261,7 @@
 
             try {
                 await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-                Swal.fire('Pronto!', 'Dados salvos sem formatação!', 'success');
+                Swal.fire('Pronto!', 'Dados salvos!', 'success');
                 setTimeout(loadData, 2000);
                 clearForm();
             } catch(e) { Swal.fire('Erro', 'Falha ao salvar', 'error'); }
