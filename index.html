@@ -13,57 +13,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
-        :root { 
-            --verde-fundo: #00160f; 
-            --verde-card: #002419;
-            --dourado: #c5a059; 
-            --borda-vidro: rgba(197, 160, 89, 0.2);
-        }
-        
-        html, body { 
-            background-color: var(--verde-fundo) !important;
-            margin: 0; padding: 0; min-height: 100vh;
-        }
-
-        body { 
-            font-family: 'Montserrat', sans-serif; color: white; 
-            background: radial-gradient(circle at top right, var(--verde-card), var(--verde-fundo)) fixed !important;
-            -webkit-font-smoothing: antialiased;
-        }
-
+        :root { --verde-fundo: #00160f; --verde-card: #002419; --dourado: #c5a059; --borda-vidro: rgba(197, 160, 89, 0.2); }
+        html, body { background-color: var(--verde-fundo) !important; margin: 0; padding: 0; min-height: 100vh; }
+        body { font-family: 'Montserrat', sans-serif; color: white; background: radial-gradient(circle at top right, var(--verde-card), var(--verde-fundo)) fixed !important; -webkit-font-smoothing: antialiased; }
         .font-luxury { font-family: 'Cinzel', serif; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--borda-vidro); }
-
-        input, textarea, select { 
-            background: rgba(0,0,0,0.5) !important; border: 1px solid var(--borda-vidro) !important; 
-            color: white !important; padding: 14px; border-radius: 12px; outline: none; width: 100%;
-        }
-        input:focus, textarea:focus { border-color: var(--dourado) !important; box-shadow: 0 0 10px rgba(197, 160, 89, 0.3); }
-
-        label { font-size: 10px; text-transform: uppercase; color: var(--dourado); letter-spacing: 1px; margin-left: 5px; font-weight: 600; display: block; margin-bottom: 4px; }
-
-        .btn-gold { 
-            background: linear-gradient(135deg, #c5a059, #fcf6ba, #b38728); 
-            color: #00160f; font-weight: 800; text-transform: uppercase; transition: 0.3s; cursor: pointer; border:none; 
-        }
-
-        .card-perfume { background: var(--verde-card); border: 1px solid var(--borda-vidro); transition: 0.3s; height: 110px; }
+        input, textarea, select { background: rgba(0,0,0,0.5) !important; border: 1px solid var(--borda-vidro) !important; color: white !important; padding: 14px; border-radius: 12px; outline: none; width: 100%; }
+        .btn-gold { background: linear-gradient(135deg, #c5a059, #fcf6ba, #b38728); color: #00160f; font-weight: 800; text-transform: uppercase; transition: 0.3s; cursor: pointer; border:none; }
+        .card-perfume { background: var(--verde-card); border: 1px solid var(--borda-vidro); transition: 0.3s; min-height: 110px; }
         .card-perfume:hover { transform: translateY(-3px); border-color: var(--dourado); }
-
         #loginOverlay { position: fixed; inset: 0; background: var(--verde-fundo); z-index: 9999; display: flex; align-items: center; justify-content: center; }
-
         .sync-spin { animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        @media (max-width: 768px) {
-            .main-container { padding: 10px !important; }
-            .chart-container { height: 200px !important; }
-        }
     </style>
 </head>
 <body>
 
-    <!-- LOGIN -->
     <div id="loginOverlay">
         <div class="glass p-10 rounded-[40px] w-full max-w-sm text-center">
             <h1 class="font-luxury text-[#c5a059] text-4xl mb-4 tracking-[10px]">PRIVÉ</h1>
@@ -72,7 +37,6 @@
         </div>
     </div>
 
-    <!-- APP -->
     <div id="app" style="display:none">
         <header class="glass sticky top-0 z-50 px-6 py-4 flex justify-between items-center mb-6">
             <h1 class="font-luxury text-[#c5a059] text-xl tracking-widest uppercase">Assinatura <span class="text-white font-sans">Parfum</span></h1>
@@ -84,35 +48,31 @@
             </div>
         </header>
 
-        <main class="max-w-7xl mx-auto px-4 main-container pb-20">
-            <!-- DASHBOARD -->
+        <main class="max-w-7xl mx-auto px-4 pb-20">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                <div class="glass p-6 rounded-[30px] text-center flex flex-col justify-center h-full">
+                <div class="glass p-6 rounded-[30px] text-center">
                     <p class="text-[9px] text-gray-500 mb-1 uppercase tracking-widest">Valor do Estoque Total</p>
                     <h2 id="statValorTotal" class="text-2xl font-luxury text-[#c5a059]">R$ 0,00</h2>
                 </div>
-                <div class="glass p-6 rounded-[30px] text-center flex flex-col justify-center h-full">
+                <div class="glass p-6 rounded-[30px] text-center">
                     <p class="text-[9px] text-gray-500 mb-1 uppercase tracking-widest">Produtos em Linha</p>
                     <h2 id="statTotal" class="text-3xl font-luxury text-white">0</h2>
                 </div>
                 <div class="glass p-6 rounded-[30px] overflow-hidden">
-                    <p class="text-[8px] text-[#c5a059] mb-3 uppercase text-center font-bold tracking-widest">Top Marcas (Volume)</p>
-                    <div class="chart-container h-[120px] relative">
-                        <canvas id="brandBarChart"></canvas>
-                    </div>
+                    <p class="text-[8px] text-[#c5a059] mb-3 uppercase text-center font-bold tracking-widest">Top Marcas</p>
+                    <div class="h-[100px] relative"><canvas id="brandBarChart"></canvas></div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- EDITOR -->
                 <div class="lg:col-span-5">
-                    <form id="perfumeForm" class="glass p-6 md:p-8 rounded-[40px] space-y-6">
+                    <form id="perfumeForm" class="glass p-6 rounded-[40px] space-y-6">
                         <div class="flex justify-between items-center border-b border-white/5 pb-4">
                             <h2 id="formTitle" class="font-luxury text-[#c5a059] text-lg uppercase">Gerenciar</h2>
-                            <button type="button" onclick="clearForm()" class="text-[10px] text-gray-400 uppercase tracking-widest">Novo +</button>
+                            <button type="button" onclick="clearForm()" class="text-[10px] text-gray-400 uppercase">Novo +</button>
                         </div>
                         <input type="hidden" id="id">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-2 gap-4">
                             <div><label>Marca</label><input type="text" id="marca" required></div>
                             <div><label>Público</label>
                                 <select id="categoria">
@@ -123,41 +83,32 @@
                                 </select>
                             </div>
                         </div>
-                        <div><label>Nome do Perfume</label><input type="text" id="nome" required></div>
+                        <div><label>Nome</label><input type="text" id="nome" required></div>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                             <div><label>Preço</label><input type="text" id="preco" required></div>
                             <div><label>Oferta</label><input type="text" id="promocao"></div>
                             <div><label>Estoque</label><input type="number" id="quantidade" value="1"></div>
                             <div><label>Cupom</label><input type="text" id="cupom"></div>
                         </div>
-                        <div><label>Descrição</label><textarea id="descricao" rows="4"></textarea></div>
-                        
-                        <div class="grid grid-cols-2 gap-4 items-end">
-                            <div>
-                                <label>URL da Imagem</label>
-                                <input type="text" id="imagem">
-                            </div>
-                            <div class="flex justify-center">
-                                <img id="pre" src="" class="w-16 h-16 rounded-lg object-contain glass">
-                            </div>
+                        <div class="grid grid-cols-2 gap-4 items-center">
+                            <div><label>URL Imagem</label><input type="text" id="imagem"></div>
+                            <img id="pre" src="" class="w-16 h-16 rounded-lg object-contain glass mx-auto">
                         </div>
-
                         <div class="flex items-center justify-between glass p-4 rounded-2xl border-[#c5a059]/20 border">
                             <span class="text-[10px] uppercase font-bold text-[#c5a059]">Mais vendido</span>
                             <input type="checkbox" id="maisVendido" class="w-6 h-6 accent-[#c5a059]">
                         </div>
-
-                        <div class="flex gap-4 pt-4">
-                            <button type="submit" id="saveBtn" class="btn-gold flex-1 py-5 rounded-2xl text-xs uppercase">Publicar Alterações</button>
-                            <button type="button" id="delBtn" class="hidden bg-red-950/40 text-red-500 border border-red-500/20 px-6 rounded-2xl text-[10px] font-bold uppercase" onclick="excluirPerfume()">Excluir</button>
-                        </div>
+                        <button type="submit" id="saveBtn" class="btn-gold w-full py-5 rounded-2xl text-xs uppercase">Publicar Alterações</button>
+                        <button type="button" id="delBtn" class="hidden w-full bg-red-900/20 text-red-500 border border-red-500/30 py-3 rounded-xl text-[10px] font-bold uppercase" onclick="excluirPerfume()">Excluir Produto</button>
                     </form>
                 </div>
 
-                <!-- LISTA -->
                 <div class="lg:col-span-7">
                     <input type="text" id="search" onkeyup="filter()" placeholder="BUSCAR POR NOME OU GRIFE..." class="w-full !rounded-full text-center text-xs tracking-[3px] py-4 glass mb-6 uppercase">
+                    <!-- Lista de Produtos -->
                     <div id="productList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                    
+                    <!-- Paginação -->
                     <div class="mt-8 flex justify-between items-center glass p-4 rounded-full px-10">
                         <button onclick="prevPage()" class="text-[10px] text-[#c5a059] font-bold uppercase">Anterior</button>
                         <span id="pageInfo" class="text-[10px] text-gray-500">Pág 1</span>
@@ -169,12 +120,12 @@
     </div>
 
     <script>
-        // ATENÇÃO: COLOQUE SUA URL ABAIXO
+        // VERIFIQUE SE ESTA URL TERMINA COM /exec
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzVHuQ8rcs_ca4WqLzpZJ0jmeNeTcMENg63qpKzJzP4EBkzwsYwbz03d10ZWhNMFxLQzw/exec"; 
         const SENHA_MESTRA = "ticoeteco";
         
         let rawData = [], filteredData = [], currentPage = 1, brandChart;
-        const itemsPerPage = 20; // Aumentado para mostrar mais perfumes por página
+        const itemsPerPage = 12; // Número de itens por página
 
         const maskPrice = { mask: 'R$ num', blocks: { num: { mask: Number, thousandsSeparator: '.', padFractionalZeros: true } } };
         IMask(document.getElementById('preco'), maskPrice);
@@ -188,12 +139,17 @@
         async function loadData() {
             const syncIcon = document.getElementById('syncIcon');
             syncIcon.classList.add('sync-spin');
+            
             try {
-                const res = await fetch(WEB_APP_URL);
-                if (!res.ok) throw new Error("Erro na rede");
-                const data = await res.json();
+                // Adicionamos um timestamp para evitar cache do navegador
+                const response = await fetch(`${WEB_APP_URL}?t=${new Date().getTime()}`);
                 
-                // Filtra linhas vazias e ordena por ID NUMÉRICO (Crescente)
+                if (!response.ok) throw new Error("Resposta da rede não foi OK");
+                
+                const data = await response.json();
+                
+                // 1. Filtra linhas que não tenham ID ou Nome
+                // 2. Ordena por ID NUMÉRICO crescente
                 rawData = data.slice(1)
                              .filter(r => r[0] !== "" && r[3] !== "")
                              .sort((a, b) => Number(a[0]) - Number(b[0]));
@@ -201,9 +157,15 @@
                 filteredData = [...rawData];
                 updateDashboard();
                 renderList();
+                
             } catch(e) { 
-                console.error(e);
-                Swal.fire('Atenção', 'Não foi possível carregar os dados. Verifique a URL do App Script.', 'warning'); 
+                console.error("Erro detalhado:", e);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Falha na conexão',
+                    text: 'Não conseguimos ler a planilha. Verifique se o Script foi publicado corretamente como Web App para "Anyone".',
+                    confirmButtonColor: '#c5a059'
+                });
             } finally { 
                 syncIcon.classList.remove('sync-spin'); 
             }
@@ -228,23 +190,25 @@
             const topBrands = Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 5);
             brandChart = new Chart(ctx, {
                 type: 'bar',
-                data: { labels: topBrands.map(b => b[0]), datasets: [{ data: topBrands.map(b => b[1]), backgroundColor: '#c5a059', borderRadius: 4, barThickness: 12 }] },
-                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { ticks: { color: '#fff', font: { size: 9 } }, grid: { display: false } } } }
+                data: { labels: topBrands.map(b => b[0]), datasets: [{ data: topBrands.map(b => b[1]), backgroundColor: '#c5a059', borderRadius: 4, barThickness: 8 }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { ticks: { color: '#fff', font: { size: 8 } }, grid: { display: false } } } }
             });
         }
 
         function renderList() {
             const list = document.getElementById('productList');
             list.innerHTML = "";
+            
             const start = (currentPage - 1) * itemsPerPage;
-            const paginatedItems = filteredData.slice(start, start + itemsPerPage);
+            const end = start + itemsPerPage;
+            const paginatedData = filteredData.slice(start, end);
 
-            paginatedItems.forEach(row => {
+            paginatedData.forEach(row => {
                 const temOferta = row[5] && row[5].trim() !== "" && row[5] !== "R$ 0,00";
                 const ehTopSeller = row[8] == "1";
 
                 const card = document.createElement('div');
-                card.className = "card-perfume p-4 rounded-3xl flex items-center gap-4 cursor-pointer relative overflow-hidden";
+                card.className = "card-perfume p-4 rounded-3xl flex items-center gap-4 cursor-pointer relative overflow-hidden glass";
                 card.onclick = () => fillForm(row);
                 card.innerHTML = `
                     <div class="absolute top-2 right-2 flex flex-col gap-1 items-end z-10">
@@ -261,13 +225,14 @@
                                 <span class="text-[9px] ${temOferta ? 'text-gray-500 line-through' : 'text-white'}">${row[4]}</span>
                                 ${temOferta ? `<span class="text-[10px] text-[#c5a059] font-bold">${row[5]}</span>` : ''}
                             </div>
-                            <span class="text-[8px] text-gray-400 font-medium">Estoque: ${row[17] || 0}</span>
+                            <span class="text-[8px] text-gray-400 font-medium">Qtd: ${row[17] || 0}</span>
                         </div>
                     </div>
                 `;
                 list.appendChild(card);
             });
-            document.getElementById('pageInfo').innerText = `Pág ${currentPage}`;
+            
+            document.getElementById('pageInfo').innerText = `Pág ${currentPage} de ${Math.ceil(filteredData.length / itemsPerPage) || 1}`;
         }
 
         function fillForm(row) {
@@ -278,58 +243,13 @@
             document.getElementById('promocao').value = row[5] || "";
             document.getElementById('imagem').value = row[6] || "";
             document.getElementById('pre').src = row[6] || "";
-            document.getElementById('descricao').value = row[7] || "";
             document.getElementById('maisVendido').checked = row[8] == "1";
-            document.getElementById('topo').value = row[9] || "";
-            document.getElementById('coracao').value = row[10] || "";
-            document.getElementById('base').value = row[11] || "";
-            document.getElementById('cupom').value = row[12] || "";
             document.getElementById('categoria').value = row[13] || "Masculino";
-            document.getElementById('doce').value = row[14] || 0;
-            document.getElementById('amadeirado').value = row[15] || 0;
-            document.getElementById('citrico').value = row[16] || 0;
-            document.getElementById('especiado').value = row[17] || 0;
             document.getElementById('quantidade').value = row[17] || 1;
             
-            document.getElementById('formTitle').innerText = "Editar Item #" + row[0];
+            document.getElementById('formTitle').innerText = "Editar #" + row[0];
             document.getElementById('delBtn').classList.remove('hidden');
             window.scrollTo({top: 0, behavior: 'smooth'});
-        }
-
-        document.getElementById('perfumeForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('saveBtn');
-            btn.disabled = true; btn.innerText = "Salvando...";
-            const body = {
-                id: document.getElementById('id').value || (rawData.length > 0 ? Math.max(...rawData.map(r => parseInt(r[0]))) + 1 : 1).toString(),
-                marca: document.getElementById('marca').value, nome: document.getElementById('nome').value,
-                preco: document.getElementById('preco').value, promocao: document.getElementById('promocao').value,
-                imagem: document.getElementById('imagem').value, descricao: document.getElementById('descricao').value,
-                maisVendido: document.getElementById('maisVendido').checked ? "1" : "0",
-                topo: document.getElementById('topo').value, coracao: document.getElementById('coracao').value, base: document.getElementById('base').value,
-                cupom: document.getElementById('cupom').value, categoria: document.getElementById('categoria').value,
-                doce: document.getElementById('doce').value, amadeirado: document.getElementById('amadeirado').value,
-                citrico: document.getElementById('citrico').value, especiado: document.getElementById('especiado').value,
-                quantidade: document.getElementById('quantidade').value, action: 'save'
-            };
-            try {
-                await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(body) });
-                Swal.fire('Pronto!', 'Inventário Atualizado!', 'success');
-                setTimeout(loadData, 1500); 
-                clearForm();
-            } catch(e) {
-                Swal.fire('Erro', 'Falha ao salvar', 'error');
-            }
-            btn.disabled = false; btn.innerText = "Publicar Alterações";
-        };
-
-        async function excluirPerfume() {
-            const res = await Swal.fire({ title: 'Remover?', text: 'Isso apagará o item da planilha!', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Sim' });
-            if (res.isConfirmed) {
-                await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({id: document.getElementById('id').value, action: 'delete'}) });
-                Swal.fire('Removido!', '', 'success');
-                setTimeout(loadData, 1000); clearForm();
-            }
         }
 
         function clearForm() {
@@ -338,6 +258,47 @@
             document.getElementById('pre').src = "";
             document.getElementById('delBtn').classList.add('hidden');
             document.getElementById('formTitle').innerText = "Novo Perfume";
+        }
+
+        document.getElementById('perfumeForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('saveBtn');
+            btn.disabled = true; btn.innerText = "Salvando...";
+            
+            const body = {
+                id: document.getElementById('id').value || (rawData.length > 0 ? Math.max(...rawData.map(r => Number(r[0]))) + 1 : 1).toString(),
+                marca: document.getElementById('marca').value, 
+                nome: document.getElementById('nome').value,
+                preco: document.getElementById('preco').value, 
+                promocao: document.getElementById('promocao').value,
+                imagem: document.getElementById('imagem').value, 
+                maisVendido: document.getElementById('maisVendido').checked ? "1" : "0",
+                categoria: document.getElementById('categoria').value,
+                quantidade: document.getElementById('quantidade').value, 
+                action: 'save'
+            };
+
+            try {
+                await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(body) });
+                Swal.fire('Pronto!', 'Dados enviados com sucesso!', 'success');
+                setTimeout(loadData, 1500); 
+                clearForm();
+            } catch(e) {
+                Swal.fire('Erro', 'Falha ao salvar dados.', 'error');
+            } finally {
+                btn.disabled = false; btn.innerText = "Publicar Alterações";
+            }
+        };
+
+        async function excluirPerfume() {
+            const res = await Swal.fire({ title: 'Remover?', text: 'Deseja excluir este item?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Sim, excluir' });
+            if (res.isConfirmed) {
+                const id = document.getElementById('id').value;
+                await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({id: id, action: 'delete'}) });
+                Swal.fire('Excluído!', '', 'success');
+                setTimeout(loadData, 1000); 
+                clearForm();
+            }
         }
 
         function filter() {
