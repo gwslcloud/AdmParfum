@@ -16,7 +16,7 @@
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid var(--borda-vidro); }
         input, textarea, select { background: rgba(0,0,0,0.5) !important; border: 1px solid var(--borda-vidro) !important; color: white !important; padding: 12px; border-radius: 12px; outline: none; width: 100%; }
         .btn-gold { background: linear-gradient(135deg, #c5a059, #fcf6ba, #b38728); color: #00160f; font-weight: 800; text-transform: uppercase; cursor: pointer; border:none; }
-        .card-perfume { background: var(--verde-card); border: 1px solid var(--borda-vidro); transition: 0.3s; height: 110px; }
+        .card-perfume { background: var(--verde-card); border: 1px solid var(--borda-vidro); transition: 0.3s; min-height: 110px; }
         .card-perfume:hover { transform: translateY(-3px); border-color: var(--dourado); }
         .sync-spin { animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -24,6 +24,7 @@
 </head>
 <body>
 
+    <!-- Overlay de Login -->
     <div id="loginOverlay" class="fixed inset-0 bg-[#00160f] z-[9999] flex items-center justify-center">
         <div class="glass p-10 rounded-[40px] w-full max-w-sm text-center">
             <h1 class="font-luxury text-[#c5a059] text-4xl mb-4 tracking-[10px]">PRIVÉ</h1>
@@ -44,13 +45,14 @@
         </header>
 
         <main class="max-w-7xl mx-auto px-4 pb-20">
+            <!-- Dashboard Stats -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 text-center">
                 <div class="glass p-6 rounded-[30px]">
-                    <p class="text-[9px] text-gray-500 uppercase tracking-widest">Estoque Total</p>
+                    <p class="text-[9px] text-gray-500 uppercase tracking-widest">Estoque Total Estimado</p>
                     <h2 id="statValorTotal" class="text-2xl font-luxury text-[#c5a059]">R$ 0,00</h2>
                 </div>
                 <div class="glass p-6 rounded-[30px]">
-                    <p class="text-[9px] text-gray-500 uppercase tracking-widest">Em Linha</p>
+                    <p class="text-[9px] text-gray-500 uppercase tracking-widest">Produtos em Linha</p>
                     <h2 id="statTotal" class="text-3xl font-luxury text-white">0</h2>
                 </div>
                 <div class="glass p-4 rounded-[30px] overflow-hidden">
@@ -60,6 +62,7 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Formulário -->
                 <div class="lg:col-span-5">
                     <form id="perfumeForm" class="glass p-6 rounded-[40px] space-y-4">
                         <div class="flex justify-between items-center border-b border-white/5 pb-2">
@@ -67,6 +70,7 @@
                             <button type="button" onclick="clearForm()" class="text-[10px] text-gray-400">Novo +</button>
                         </div>
                         <input type="hidden" id="id">
+                        
                         <div class="grid grid-cols-2 gap-4">
                             <div><label class="text-[9px] text-[#c5a059]">MARCA</label><input type="text" id="marca" required></div>
                             <div><label class="text-[9px] text-[#c5a059]">PÚBLICO</label>
@@ -78,28 +82,38 @@
                                 </select>
                             </div>
                         </div>
-                        <div><label class="text-[9px] text-[#c5a059]">NOME</label><input type="text" id="nome" required></div>
+
+                        <div><label class="text-[9px] text-[#c5a059]">NOME DO PERFUME</label><input type="text" id="nome" required></div>
+
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                             <div><label class="text-[9px] text-[#c5a059]">PREÇO</label><input type="text" id="preco" required></div>
                             <div><label class="text-[9px] text-[#c5a059]">OFERTA</label><input type="text" id="promocao"></div>
                             <div><label class="text-[9px] text-[#c5a059]">ESTOQUE</label><input type="number" id="quantidade" value="1"></div>
                         </div>
+
                         <div class="flex items-center gap-4">
                             <div class="flex-1"><label class="text-[9px] text-[#c5a059]">IMAGEM URL</label><input type="text" id="imagem"></div>
-                            <img id="pre" src="" class="w-12 h-12 rounded-lg object-contain glass">
+                            <img id="pre" src="" class="w-12 h-12 rounded-lg object-contain glass" onerror="this.src='https://via.placeholder.com/50'">
                         </div>
+
                         <div class="flex items-center justify-between glass p-3 rounded-2xl border-[#c5a059]/20 border">
-                            <span class="text-[10px] uppercase font-bold text-[#c5a059]">Mais vendido</span>
+                            <span class="text-[10px] uppercase font-bold text-[#c5a059]">Destaque (Mais Vendido)</span>
                             <input type="checkbox" id="maisVendido" class="w-5 h-5 accent-[#c5a059]">
                         </div>
-                        <button type="submit" id="saveBtn" class="btn-gold w-full py-4 rounded-xl text-xs uppercase">Salvar Produto</button>
-                        <button type="button" id="delBtn" class="hidden w-full text-red-500 text-[10px] font-bold uppercase pt-2" onclick="excluirPerfume()">Excluir</button>
+
+                        <button type="submit" id="saveBtn" class="btn-gold w-full py-4 rounded-xl text-xs uppercase">Salvar na Planilha</button>
+                        <button type="button" id="delBtn" class="hidden w-full text-red-500 text-[10px] font-bold uppercase pt-2" onclick="excluirPerfume()">Excluir Produto</button>
                     </form>
                 </div>
 
+                <!-- Lista de Produtos -->
                 <div class="lg:col-span-7">
-                    <input type="text" id="search" onkeyup="filter()" placeholder="BUSCAR PERFUME..." class="w-full !rounded-full text-center text-xs py-4 glass mb-6 uppercase tracking-[3px]">
-                    <div id="productList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                    <input type="text" id="search" onkeyup="filter()" placeholder="BUSCAR POR NOME OU MARCA..." class="w-full !rounded-full text-center text-xs py-4 glass mb-6 uppercase tracking-[3px]">
+                    
+                    <div id="productList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Itens carregados via JS -->
+                    </div>
+
                     <div class="mt-8 flex justify-between items-center glass p-4 rounded-full px-10">
                         <button onclick="prevPage()" class="text-[10px] text-[#c5a059] font-bold uppercase">Anterior</button>
                         <span id="pageInfo" class="text-[10px] text-gray-500 font-bold">Pág 1</span>
@@ -115,50 +129,62 @@
         const SENHA_MESTRA = "ticoeteco";
         
         let rawData = [], filteredData = [], currentPage = 1, brandChart;
-        const itemsPerPage = 20;
+        const itemsPerPage = 10;
 
-        const maskPrice = { mask: 'R$ num', blocks: { num: { mask: Number, thousandsSeparator: '.', padFractionalZeros: true } } };
-        IMask(document.getElementById('preco'), maskPrice);
-        IMask(document.getElementById('promocao'), maskPrice);
+        // Mascaras de preço
+        const maskOptions = { mask: 'R$ num', blocks: { num: { mask: Number, thousandsSeparator: '.', padFractionalZeros: true, radix: ',' } } };
+        IMask(document.getElementById('preco'), maskOptions);
+        IMask(document.getElementById('promocao'), maskOptions);
 
         window.onload = () => { if(localStorage.getItem('lux_auth') === 'true') loginSucess(); };
-        function login() { if(document.getElementById('pass').value === SENHA_MESTRA) { localStorage.setItem('lux_auth', 'true'); loginSucess(); } else { Swal.fire('Erro', 'Senha Incorreta', 'error'); } }
-        function loginSucess() { document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('app').style.display = 'block'; loadData(); }
+
+        function login() { 
+            if(document.getElementById('pass').value === SENHA_MESTRA) { 
+                localStorage.setItem('lux_auth', 'true'); 
+                loginSucess(); 
+            } else { 
+                Swal.fire('Erro', 'Chave Mestra Incorreta', 'error'); 
+            } 
+        }
+
+        function loginSucess() { 
+            document.getElementById('loginOverlay').style.display = 'none'; 
+            document.getElementById('app').style.display = 'block'; 
+            loadData(); 
+        }
+
         function logout() { localStorage.removeItem('lux_auth'); location.reload(); }
 
         async function loadData() {
             const syncIcon = document.getElementById('syncIcon');
             syncIcon.classList.add('sync-spin');
             try {
-                // FORÇAR O NAVEGADOR A NÃO USAR CACHE (Cache-Bust)
                 const url = `${WEB_APP_URL}?nocache=${new Date().getTime()}`;
-                const response = await fetch(url, { cache: "no-store" });
-                
-                if (!response.ok) throw new Error("Erro na rede");
-                
+                const response = await fetch(url);
                 const data = await response.json();
-                if(!Array.isArray(data)) throw new Error("JSON Inválido");
 
-                rawData = data.slice(1)
-                             .filter(r => r[0] !== "" && r[3] !== "")
-                             .sort((a, b) => Number(a[0]) - Number(b[0]));
+                if(data.error) throw new Error(data.error);
+
+                // Filtrar cabeçalho e linhas vazias
+                rawData = data.slice(1).filter(r => r[0] !== "" && r[3] !== "");
                 
                 filteredData = [...rawData];
                 updateDashboard();
                 renderList();
             } catch(e) {
-                console.error("Erro de Conexão:", e);
-                Swal.fire('Falha na Conexão', 'Não foi possível ler a planilha. Tente abrir o site em uma aba anônima ou publique o script novamente.', 'error');
+                console.error("Erro:", e);
+                Swal.fire('Erro de Sincronização', 'Verifique se o script foi publicado como "Qualquer pessoa" e se o ID da planilha está correto no App Script.', 'error');
             } finally { syncIcon.classList.remove('sync-spin'); }
         }
 
         function updateDashboard() {
             let totalVal = 0, brandCounts = {};
             rawData.forEach(r => {
-                const p = parseFloat(r[4].toString().replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+                // Limpeza de preço para cálculo
+                const p = parseFloat(r[4]?.toString().replace('R$', '').replace('.', '').replace(',', '.')) || 0;
                 const q = parseInt(r[17]) || 0; 
                 totalVal += (p * q);
-                brandCounts[r[1]] = (brandCounts[r[1]] || 0) + 1;
+                if(r[1]) brandCounts[r[1]] = (brandCounts[r[1]] || 0) + 1;
             });
             document.getElementById('statValorTotal').innerText = totalVal.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'});
             document.getElementById('statTotal').innerText = rawData.length;
@@ -183,30 +209,27 @@
             const paginatedData = filteredData.slice(start, start + itemsPerPage);
 
             paginatedData.forEach(row => {
-                const temOferta = row[5] && row[5].trim() !== "" && row[5] !== "R$ 0,00";
-                const ehTopSeller = row[8] == "1";
-
+                const temOferta = row[5] && row[5].toString().length > 5;
                 const card = document.createElement('div');
-                card.className = "card-perfume p-4 rounded-3xl flex items-center gap-4 cursor-pointer relative overflow-hidden glass";
+                card.className = "card-perfume p-4 rounded-3xl flex items-center gap-4 cursor-pointer relative glass";
                 card.onclick = () => fillForm(row);
                 card.innerHTML = `
-                    <div class="absolute top-2 right-2 flex flex-col gap-1 items-end z-10">
-                        ${ehTopSeller ? '<span class="bg-[#c5a059] text-[#00160f] text-[7px] font-black px-2 py-0.5 rounded-full uppercase">Top</span>' : ''}
+                    <div class="absolute top-2 right-2 flex flex-col gap-1 items-end">
+                        ${row[8] == "1" ? '<span class="bg-[#c5a059] text-[#00160f] text-[7px] font-black px-2 py-0.5 rounded-full uppercase">Top</span>' : ''}
                         ${temOferta ? '<span class="bg-red-600 text-white text-[7px] font-black px-2 py-0.5 rounded-full uppercase">Oferta</span>' : ''}
                     </div>
-                    <div class="text-[10px] font-bold text-[#c5a059] opacity-30">#${row[0]}</div>
                     <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center p-1">
-                        <img src="${row[6] || ''}" class="max-h-full object-contain" onerror="this.src='https://via.placeholder.com/50?text=?'">
+                        <img src="${row[6] || ''}" class="max-h-full object-contain" onerror="this.src='https://via.placeholder.com/50'">
                     </div>
                     <div class="flex-1 min-w-0 pr-10">
                         <p class="text-[8px] text-[#c5a059] font-black uppercase">${row[1]}</p>
                         <h4 class="text-[10px] font-bold text-white uppercase truncate">${row[3]}</h4>
                         <div class="flex justify-between mt-1 items-end">
-                            <div class="flex flex-col">
+                            <div>
                                 <span class="text-[9px] ${temOferta ? 'text-gray-500 line-through' : 'text-white'}">${row[4]}</span>
-                                ${temOferta ? `<span class="text-[10px] text-[#c5a059] font-bold">${row[5]}</span>` : ''}
+                                ${temOferta ? `<br><span class="text-[10px] text-[#c5a059] font-bold">${row[5]}</span>` : ''}
                             </div>
-                            <span class="text-[8px] text-gray-400 font-bold">QTD: ${row[17] || 0}</span>
+                            <span class="text-[8px] text-gray-400 font-bold">ESTOQUE: ${row[17] || 0}</span>
                         </div>
                     </div>
                 `;
@@ -236,42 +259,56 @@
             document.getElementById('id').value = "";
             document.getElementById('pre').src = "";
             document.getElementById('delBtn').classList.add('hidden');
-            document.getElementById('formTitle').innerText = "Novo Perfume";
+            document.getElementById('formTitle').innerText = "Gerenciar";
         }
 
         document.getElementById('perfumeForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('saveBtn');
             btn.disabled = true; btn.innerText = "Sincronizando...";
+
             const body = {
-                id: document.getElementById('id').value || (rawData.length > 0 ? Math.max(...rawData.map(r => Number(r[0]))) + 1 : 1).toString(),
-                marca: document.getElementById('marca').value, nome: document.getElementById('nome').value,
-                preco: document.getElementById('preco').value, promocao: document.getElementById('promocao').value,
-                imagem: document.getElementById('imagem').value, maisVendido: document.getElementById('maisVendido').checked ? "1" : "0",
-                categoria: document.getElementById('categoria').value, quantidade: document.getElementById('quantidade').value, 
+                id: document.getElementById('id').value || Date.now().toString(),
+                marca: document.getElementById('marca').value, 
+                nome: document.getElementById('nome').value,
+                preco: document.getElementById('preco').value, 
+                promocao: document.getElementById('promocao').value,
+                imagem: document.getElementById('imagem').value, 
+                maisVendido: document.getElementById('maisVendido').checked ? "1" : "0",
+                categoria: document.getElementById('categoria').value, 
+                quantidade: document.getElementById('quantidade').value, 
                 action: 'save'
             };
+
             try {
                 await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(body) });
-                Swal.fire('Pronto!', 'Inventário atualizado!', 'success');
-                setTimeout(loadData, 1500); clearForm();
-            } catch(e) { Swal.fire('Erro', 'Falha ao salvar.', 'error'); }
-            btn.disabled = false; btn.innerText = "Salvar Produto";
+                Swal.fire({ title: 'Sucesso!', text: 'Dados enviados para a planilha.', icon: 'success', timer: 2000 });
+                setTimeout(loadData, 2500); 
+                clearForm();
+            } catch(e) { 
+                Swal.fire('Erro', 'Falha ao salvar.', 'error'); 
+            } finally {
+                btn.disabled = false; btn.innerText = "Salvar na Planilha";
+            }
         };
 
         async function excluirPerfume() {
-            const res = await Swal.fire({ title: 'Excluir?', text: 'Confirmar exclusão?', icon: 'warning', showCancelButton: true });
+            const res = await Swal.fire({ title: 'Excluir?', text: 'Deseja remover este produto?', icon: 'warning', showCancelButton: true });
             if (res.isConfirmed) {
                 const id = document.getElementById('id').value;
                 await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({id: id, action: 'delete'}) });
                 Swal.fire('Removido!', '', 'success');
-                setTimeout(loadData, 1000); clearForm();
+                setTimeout(loadData, 2000); 
+                clearForm();
             }
         }
 
         function filter() {
             const val = document.getElementById('search').value.toLowerCase();
-            filteredData = rawData.filter(r => r[3].toLowerCase().includes(val) || r[1].toLowerCase().includes(val));
+            filteredData = rawData.filter(r => 
+                r[3].toString().toLowerCase().includes(val) || 
+                r[1].toString().toLowerCase().includes(val)
+            );
             currentPage = 1; renderList();
         }
         function prevPage() { if(currentPage > 1) { currentPage--; renderList(); } }
