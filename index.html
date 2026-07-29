@@ -77,8 +77,7 @@
         <header class="glass sticky top-0 z-50 px-6 py-4 flex justify-between items-center mb-6">
             <h1 class="font-luxury text-[#c5a059] text-xl tracking-widest uppercase">Assinatura <span class="text-white font-sans">Parfum</span></h1>
             <div class="flex items-center gap-3">
-                <!-- BOTÃO SINCRONIZAR -->
-                <button onclick="loadData()" id="syncBtn" class="bg-white/5 hover:bg-white/10 p-2 rounded-full border border-white/10 transition-all" title="Sincronizar Dados">
+                <button onclick="loadData()" id="syncBtn" class="bg-white/5 hover:bg-white/10 p-2 rounded-full border border-white/10 transition-all">
                     <svg id="syncIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c5a059" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path><path d="M16 16h5v5"></path></svg>
                 </button>
                 <button onclick="logout()" class="text-red-500 text-[10px] font-bold border border-red-500/30 px-3 py-1 rounded-full uppercase">Sair</button>
@@ -86,7 +85,6 @@
         </header>
 
         <main class="max-w-7xl mx-auto px-4 main-container pb-20">
-            
             <!-- DASHBOARD -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
                 <div class="glass p-6 rounded-[30px] text-center flex flex-col justify-center h-full">
@@ -106,7 +104,6 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                
                 <!-- EDITOR -->
                 <div class="lg:col-span-6">
                     <form id="perfumeForm" class="glass p-6 md:p-8 rounded-[40px] space-y-6">
@@ -114,9 +111,7 @@
                             <h2 id="formTitle" class="font-luxury text-[#c5a059] text-lg uppercase">Gerenciar</h2>
                             <button type="button" onclick="clearForm()" class="text-[10px] text-gray-400 uppercase tracking-widest">Novo +</button>
                         </div>
-                        
                         <input type="hidden" id="id">
-                        
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div><label>Marca</label><input type="text" id="marca" required></div>
                             <div><label>Público</label>
@@ -128,37 +123,26 @@
                                 </select>
                             </div>
                         </div>
-
                         <div><label>Nome do Perfume</label><input type="text" id="nome" required></div>
-
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                             <div><label>Preço</label><input type="text" id="preco" required></div>
                             <div><label>Oferta</label><input type="text" id="promocao"></div>
                             <div><label>Estoque</label><input type="number" id="quantidade" value="1"></div>
                             <div><label>Cupom</label><input type="text" id="cupom"></div>
                         </div>
-
-                        <div><label>Descrição do Produto</label>
-                            <textarea id="descricao" rows="6" placeholder="Notas, projeção e detalhes luxuosos..."></textarea>
+                        <div><label>Descrição do Produto</label><textarea id="descricao" rows="6"></textarea></div>
+                        <div class="space-y-4 bg-black/20 p-5 rounded-[25px] border border-white/5 text-center">
+                            <p class="text-[10px] font-bold text-[#c5a059] tracking-widest uppercase">Notas Olfativas</p>
+                            <div><label>Topo</label><input type="text" id="topo"></div>
+                            <div><label>Coração</label><input type="text" id="coracao"></div>
+                            <div><label>Base</label><input type="text" id="base"></div>
                         </div>
-
-                        <div class="space-y-4 bg-black/20 p-5 rounded-[25px] border border-white/5">
-                            <p class="text-center text-[10px] font-bold text-[#c5a059] tracking-widest uppercase">Notas Olfativas</p>
-                            <div><label>Notas de Topo (Saída)</label><input type="text" id="topo"></div>
-                            <div><label>Notas de Coração (Corpo)</label><input type="text" id="coracao"></div>
-                            <div><label>Notas de Base (Fundo)</label><input type="text" id="base"></div>
+                        <div class="bg-black/40 p-5 rounded-[25px] grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div><label>Doce</label><input type="number" id="doce" value="0"></div>
+                            <div><label>Amadeirado</label><input type="number" id="amadeirado" value="0"></div>
+                            <div><label>Cítrico</label><input type="number" id="citrico" value="0"></div>
+                            <div><label>Especiado</label><input type="number" id="especiado" value="0"></div>
                         </div>
-
-                        <div class="bg-black/40 p-5 rounded-[25px]">
-                            <p class="text-[9px] text-[#c5a059] font-bold text-center mb-4 tracking-widest uppercase">DNA OLFATIVO (%)</p>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div><label>Doce</label><input type="number" id="doce" value="0"></div>
-                                <div><label>Amadeirado</label><input type="number" id="amadeirado" value="0"></div>
-                                <div><label>Cítrico</label><input type="number" id="citrico" value="0"></div>
-                                <div><label>Especiado</label><input type="number" id="especiado" value="0"></div>
-                            </div>
-                        </div>
-
                         <div>
                             <label>URL da Imagem</label>
                             <div class="flex gap-4 items-center">
@@ -166,14 +150,12 @@
                                 <img id="pre" src="" class="w-14 h-14 rounded-lg object-contain glass">
                             </div>
                         </div>
-
                         <div class="flex items-center justify-between glass p-5 rounded-2xl border-[#c5a059]/20 border">
                             <span class="text-[10px] uppercase font-bold text-[#c5a059]">Mais vendido</span>
                             <input type="checkbox" id="maisVendido" class="w-6 h-6 accent-[#c5a059]">
                         </div>
-
                         <div class="flex gap-4 pt-4">
-                            <button type="submit" id="saveBtn" class="btn-gold flex-1 py-5 rounded-2xl text-xs">Publicar Alterações</button>
+                            <button type="submit" id="saveBtn" class="btn-gold flex-1 py-5 rounded-2xl text-xs uppercase">Publicar Alterações</button>
                             <button type="button" id="delBtn" class="hidden bg-red-950/40 text-red-500 border border-red-500/20 px-6 rounded-2xl text-[10px] font-bold uppercase" onclick="excluirPerfume()">Excluir</button>
                         </div>
                     </form>
@@ -181,9 +163,8 @@
 
                 <!-- LISTA -->
                 <div class="lg:col-span-6">
-                    <input type="text" id="search" onkeyup="filter()" placeholder="BUSCAR POR NOME OU GRIFE..." class="w-full !rounded-full text-center text-xs tracking-[3px] py-4 glass mb-6">
+                    <input type="text" id="search" onkeyup="filter()" placeholder="BUSCAR POR NOME OU GRIFE..." class="w-full !rounded-full text-center text-xs tracking-[3px] py-4 glass mb-6 uppercase">
                     <div id="productList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                    
                     <div class="mt-8 flex justify-between items-center glass p-4 rounded-full px-10">
                         <button onclick="prevPage()" class="text-[10px] text-[#c5a059] font-bold uppercase">Anterior</button>
                         <span id="pageInfo" class="text-[10px] text-gray-500">Pág 1</span>
@@ -197,7 +178,6 @@
     <script>
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzVHuQ8rcs_ca4WqLzpZJ0jmeNeTcMENg63qpKzJzP4EBkzwsYwbz03d10ZWhNMFxLQzw/exec"; 
         const SENHA_MESTRA = "ticoeteco";
-
         let rawData = [], filteredData = [], currentPage = 1, brandChart;
         const itemsPerPage = 12;
 
@@ -206,20 +186,8 @@
         IMask(document.getElementById('promocao'), maskPrice);
 
         window.onload = () => { if(localStorage.getItem('lux_auth') === 'true') { loginSucess(); } };
-
-        function login() {
-            if(document.getElementById('pass').value === SENHA_MESTRA) {
-                localStorage.setItem('lux_auth', 'true');
-                loginSucess();
-            } else { Swal.fire('Erro', 'Acesso Negado', 'error'); }
-        }
-
-        function loginSucess() {
-            document.getElementById('loginOverlay').style.display = 'none';
-            document.getElementById('app').style.display = 'block';
-            loadData();
-        }
-
+        function login() { if(document.getElementById('pass').value === SENHA_MESTRA) { localStorage.setItem('lux_auth', 'true'); loginSucess(); } else { Swal.fire('Erro', 'Acesso Negado', 'error'); } }
+        function loginSucess() { document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('app').style.display = 'block'; loadData(); }
         function logout() { localStorage.removeItem('lux_auth'); location.reload(); }
 
         async function loadData() {
@@ -228,38 +196,23 @@
             try {
                 const res = await fetch(WEB_APP_URL);
                 const data = await res.json();
-                
-                rawData = data.slice(1)
-                             .filter(r => r[0] && r[3])
-                             .sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
-                
+                rawData = data.slice(1).filter(r => r[0] && r[3]).sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
                 filteredData = [...rawData];
                 updateDashboard();
                 renderList();
-            } catch(e) { 
-                Swal.fire('Erro', 'Falha na conexão', 'error'); 
-            } finally {
-                syncIcon.classList.remove('sync-spin');
-            }
+            } catch(e) { Swal.fire('Erro', 'Falha na conexão', 'error'); } finally { syncIcon.classList.remove('sync-spin'); }
         }
 
         function updateDashboard() {
-            let totalVal = 0;
-            let brandCounts = {};
-
+            let totalVal = 0, brandCounts = {};
             rawData.forEach(r => {
                 const p = parseFloat(r[4].toString().replace(/[^\d,]/g, '').replace(',', '.')) || 0;
-                // AJUSTADO PARA COLUNA R (17)
                 const q = parseInt(r[17]) || 0; 
                 totalVal += (p * q);
-
-                const marca = r[1] || 'Outros';
-                brandCounts[marca] = (brandCounts[marca] || 0) + 1;
+                brandCounts[r[1]] = (brandCounts[r[1]] || 0) + 1;
             });
-
             document.getElementById('statValorTotal').innerText = totalVal.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'});
             document.getElementById('statTotal').innerText = rawData.length;
-            
             renderBrandChart(brandCounts);
         }
 
@@ -267,31 +220,10 @@
             const ctx = document.getElementById('brandBarChart').getContext('2d');
             if(brandChart) brandChart.destroy();
             const topBrands = Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 5);
-            
             brandChart = new Chart(ctx, {
                 type: 'bar',
-                data: {
-                    labels: topBrands.map(b => b[0]),
-                    datasets: [{ 
-                        data: topBrands.map(b => b[1]), 
-                        backgroundColor: '#c5a059', 
-                        borderRadius: 4,
-                        barThickness: 12
-                    }]
-                },
-                options: { 
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { 
-                        x: { display: false },
-                        y: { 
-                            ticks: { color: '#fff', font: { size: 9, family: 'Montserrat' } },
-                            grid: { display: false, drawBorder: false }
-                        }
-                    }
-                }
+                data: { labels: topBrands.map(b => b[0]), datasets: [{ data: topBrands.map(b => b[1]), backgroundColor: '#c5a059', borderRadius: 4, barThickness: 12 }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { ticks: { color: '#fff', font: { size: 9 } }, grid: { display: false } } } }
             });
         }
 
@@ -300,16 +232,30 @@
             list.innerHTML = "";
             const start = (currentPage - 1) * itemsPerPage;
             filteredData.slice(start, start + itemsPerPage).forEach(row => {
+                // LOGICA DE SELOS
+                const temOferta = row[5] && row[5].trim() !== "" && row[5] !== "R$ 0,00";
+                const ehTopSeller = row[8] == "1";
+
                 const card = document.createElement('div');
-                card.className = "card-perfume p-4 rounded-3xl flex items-center gap-4 cursor-pointer relative";
+                card.className = "card-perfume p-4 rounded-3xl flex items-center gap-4 cursor-pointer relative overflow-hidden";
                 card.onclick = () => fillForm(row);
                 card.innerHTML = `
+                    <div class="absolute top-2 right-2 flex flex-col gap-1 items-end z-10">
+                        ${ehTopSeller ? '<span class="bg-[#c5a059] text-[#00160f] text-[7px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter shadow-lg">Top Seller</span>' : ''}
+                        ${temOferta ? '<span class="bg-red-600 text-white text-[7px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter shadow-lg">Oferta</span>' : ''}
+                    </div>
                     <div class="text-[10px] font-bold text-[#c5a059] opacity-30">#${row[0]}</div>
                     <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center p-1"><img src="${row[6] || ''}" class="max-h-full object-contain"></div>
-                    <div class="flex-1 min-w-0">
+                    <div class="flex-1 min-w-0 pr-10">
                         <p class="text-[8px] text-[#c5a059] font-black uppercase tracking-widest">${row[1]}</p>
                         <h4 class="text-[11px] font-bold text-white uppercase truncate">${row[3]}</h4>
-                        <div class="flex justify-between mt-1"><span class="text-[10px] text-gray-500">${row[4]}</span><span class="text-[8px] text-gray-400">Estoque: ${row[17] || 0}</span></div>
+                        <div class="flex justify-between mt-1 items-end">
+                            <div class="flex flex-col">
+                                <span class="text-[10px] ${temOferta ? 'text-gray-500 line-through text-[8px]' : 'text-white'}">${row[4]}</span>
+                                ${temOferta ? `<span class="text-[10px] text-[#c5a059] font-bold">${row[5]}</span>` : ''}
+                            </div>
+                            <span class="text-[8px] text-gray-400 font-medium">Estoque: ${row[17] || 0}</span>
+                        </div>
                     </div>
                 `;
                 list.appendChild(card);
@@ -336,9 +282,7 @@
             document.getElementById('amadeirado').value = row[15] || 0;
             document.getElementById('citrico').value = row[16] || 0;
             document.getElementById('especiado').value = row[17] || 0;
-            // AJUSTADO PARA COLUNA R (17)
             document.getElementById('quantidade').value = row[17] || 1;
-            
             document.getElementById('formTitle').innerText = "Editar Item #" + row[0];
             document.getElementById('delBtn').classList.remove('hidden');
             window.scrollTo({top: 0, behavior: 'smooth'});
@@ -348,7 +292,6 @@
             e.preventDefault();
             const btn = document.getElementById('saveBtn');
             btn.disabled = true; btn.innerText = "Salvando...";
-
             const body = {
                 id: document.getElementById('id').value || (rawData.length > 0 ? Math.max(...rawData.map(r => parseInt(r[0]))) + 1 : 1).toString(),
                 marca: document.getElementById('marca').value, nome: document.getElementById('nome').value,
@@ -361,7 +304,6 @@
                 citrico: document.getElementById('citrico').value, especiado: document.getElementById('especiado').value,
                 quantidade: document.getElementById('quantidade').value, action: 'save'
             };
-
             await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(body) });
             Swal.fire('Pronto!', 'Inventário Atualizado!', 'success');
             setTimeout(loadData, 1500); clearForm();
