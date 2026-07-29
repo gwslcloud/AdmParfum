@@ -127,7 +127,7 @@
 
     <script>
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzVHuQ8rcs_ca4WqLzpZJ0jmeNeTcMENg63qpKzJzP4EBkzwsYwbz03d10ZWhNMFxLQzw/exec"; 
-        const SENHA = "ticoeteco";
+        const SENHA_MESTRA = "ticoeteco";
         let rawData = [], filteredData = [], currentPage = 1, brandChart = null;
         const itemsPerPage = 8;
 
@@ -136,13 +136,13 @@
         IMask(document.getElementById('promocao'), maskConfig);
 
         window.onload = () => { if(localStorage.getItem('lux_auth') === 'true') loginSucess(); };
-        function login() { if(document.getElementById('pass').value === SENHA) { localStorage.setItem('lux_auth', 'true'); loginSucess(); } else { Swal.fire('Erro', 'Senha Incorreta', 'error'); } }
+        function login() { if(document.getElementById('pass').value === SENHA_MESTRA) { localStorage.setItem('lux_auth', 'true'); loginSucess(); } else { Swal.fire('Erro', 'Senha Incorreta', 'error'); } }
         function loginSucess() { document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('app').style.display = 'block'; loadData(); }
         function logout() { localStorage.removeItem('lux_auth'); location.reload(); }
 
         async function loadData() {
             const icon = document.getElementById('syncIcon');
-            icon.classList.add('sync-spin');
+            if(icon) icon.classList.add('sync-spin');
             try {
                 const res = await fetch(`${WEB_APP_URL}?t=${Date.now()}`);
                 const data = await res.json();
@@ -151,7 +151,7 @@
                 updateDashboard();
                 renderList();
             } catch(e) { console.error(e); }
-            finally { icon.classList.remove('sync-spin'); }
+            finally { if(icon) icon.classList.remove('sync-spin'); }
         }
 
         function updateDashboard() {
@@ -210,9 +210,10 @@
         }
 
         function fillForm(row) {
-            const fields = ['id','marca','vazio','nome','preco','promocao','imagem','descricao','maisVendido','notasTopo','notasCoracao','notasBase','cupom','doce','amadeirado','citrico','especiado','quantidade'];
-            fields.forEach((field, i) => {
-                const el = document.getElementById(field);
+            // Mapeamento dos campos do HTML para as colunas da Planilha
+            const fieldIds = ['id','marca','vazio','nome','preco','promocao','imagem','descricao','maisVendido','notasTopo','notasCoracao','notasBase','cupom','doce','amadeirado','citrico','especiado','quantidade'];
+            fieldIds.forEach((id, i) => {
+                const el = document.getElementById(id);
                 if(!el) return;
                 if(el.type === 'checkbox') el.checked = row[i] == "1";
                 else el.value = row[i] || "";
@@ -232,7 +233,7 @@
         document.getElementById('perfumeForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('saveBtn');
-            btn.disabled = true; btn.innerText = "Sincronizando...";
+            btn.disabled = true; btn.innerText = "Salvando...";
             const cleanValue = (val) => val.split(',')[0].replace(/\D/g, '');
 
             let nextId = 1;
@@ -259,12 +260,12 @@
                 amadeirado: document.getElementById('amadeirado').value,
                 citrico: document.getElementById('citrico').value,
                 especiado: document.getElementById('especiado').value,
-                quantidade: document.getElementById('quantidade').value // Envia estoque
+                quantidade: Number(document.getElementById('quantidade').value) // Força envio como número
             };
 
             try {
                 await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-                Swal.fire('Pronto!', 'Dados salvos com sucesso.', 'success');
+                Swal.fire('Sucesso!', 'Dados sincronizados com a planilha.', 'success');
                 setTimeout(loadData, 2000);
                 clearForm();
             } catch(e) { Swal.fire('Erro', 'Falha ao salvar', 'error'); }
