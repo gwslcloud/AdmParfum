@@ -169,7 +169,7 @@
         IMask(document.getElementById('promocao'), maskConfig);
 
         window.onload = () => { if(localStorage.getItem('lux_auth') === 'true') loginSucess(); };
-        function login() { if(document.getElementById('pass').value === SENHA_MESTRA) { localStorage.setItem('lux_auth', 'true'); loginSucess(); } else { Swal.fire('Erro', 'Senha Incorreta', 'error'); } }
+        function login() { if(document.getElementById('pass').value === SENHA) { localStorage.setItem('lux_auth', 'true'); loginSucess(); } else { Swal.fire('Erro', 'Senha Incorreta', 'error'); } }
         function loginSucess() { document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('app').style.display = 'block'; loadData(); }
         function logout() { localStorage.removeItem('lux_auth'); location.reload(); }
 
