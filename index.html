@@ -16,7 +16,7 @@
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid var(--borda-vidro); }
         input, textarea, select { background: rgba(0,0,0,0.5) !important; border: 1px solid var(--borda-vidro) !important; color: white !important; padding: 12px; border-radius: 12px; outline: none; width: 100%; }
         .btn-gold { background: linear-gradient(135deg, #c5a059, #fcf6ba, #b38728); color: #00160f; font-weight: 800; text-transform: uppercase; cursor: pointer; border:none; }
-        .card-perfume { background: var(--verde-card); border: 1px solid var(--borda-vidro); transition: 0.3s; min-height: 110px; }
+        .card-perfume { background: var(--verde-card); border: 1px solid var(--borda-vidro); transition: 0.3s; height: 110px; }
         .card-perfume:hover { transform: translateY(-3px); border-color: var(--dourado); }
         .sync-spin { animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -36,7 +36,7 @@
         <header class="glass sticky top-0 z-50 px-6 py-4 flex justify-between items-center mb-6">
             <h1 class="font-luxury text-[#c5a059] text-xl tracking-widest uppercase">Assinatura <span class="text-white font-sans">Parfum</span></h1>
             <div class="flex items-center gap-3">
-                <button onclick="loadData()" id="syncBtn" class="bg-white/5 p-2 rounded-full border border-white/10">
+                <button onclick="loadData()" id="syncBtn" class="bg-white/5 p-2 rounded-full border border-white/10 transition-all">
                     <svg id="syncIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c5a059" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path><path d="M16 16h5v5"></path></svg>
                 </button>
                 <button onclick="logout()" class="text-red-500 text-[10px] font-bold border border-red-500/30 px-3 py-1 rounded-full uppercase">Sair</button>
@@ -44,14 +44,13 @@
         </header>
 
         <main class="max-w-7xl mx-auto px-4 pb-20">
-            <!-- DASHBOARD -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 text-center">
                 <div class="glass p-6 rounded-[30px]">
-                    <p class="text-[9px] text-gray-500 uppercase tracking-widest">Valor do Estoque Total</p>
+                    <p class="text-[9px] text-gray-500 uppercase tracking-widest">Estoque Total</p>
                     <h2 id="statValorTotal" class="text-2xl font-luxury text-[#c5a059]">R$ 0,00</h2>
                 </div>
                 <div class="glass p-6 rounded-[30px]">
-                    <p class="text-[9px] text-gray-500 uppercase tracking-widest">Produtos em Linha</p>
+                    <p class="text-[9px] text-gray-500 uppercase tracking-widest">Em Linha</p>
                     <h2 id="statTotal" class="text-3xl font-luxury text-white">0</h2>
                 </div>
                 <div class="glass p-4 rounded-[30px] overflow-hidden">
@@ -61,7 +60,6 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- EDITOR -->
                 <div class="lg:col-span-5">
                     <form id="perfumeForm" class="glass p-6 rounded-[40px] space-y-4">
                         <div class="flex justify-between items-center border-b border-white/5 pb-2">
@@ -70,8 +68,8 @@
                         </div>
                         <input type="hidden" id="id">
                         <div class="grid grid-cols-2 gap-4">
-                            <div><label class="text-[9px] text-[#c5a059] uppercase">Marca</label><input type="text" id="marca" required></div>
-                            <div><label class="text-[9px] text-[#c5a059] uppercase">Público</label>
+                            <div><label class="text-[9px] text-[#c5a059]">MARCA</label><input type="text" id="marca" required></div>
+                            <div><label class="text-[9px] text-[#c5a059]">PÚBLICO</label>
                                 <select id="categoria">
                                     <option value="Masculino">Masculino</option>
                                     <option value="Feminino">Feminino</option>
@@ -80,27 +78,25 @@
                                 </select>
                             </div>
                         </div>
-                        <div><label class="text-[9px] text-[#c5a059] uppercase">Nome</label><input type="text" id="nome" required></div>
+                        <div><label class="text-[9px] text-[#c5a059]">NOME</label><input type="text" id="nome" required></div>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                            <div><label class="text-[9px] text-[#c5a059] uppercase">Preço</label><input type="text" id="preco" required></div>
-                            <div><label class="text-[9px] text-[#c5a059] uppercase">Oferta</label><input type="text" id="promocao"></div>
-                            <div><label class="text-[9px] text-[#c5a059] uppercase">Estoque</label><input type="number" id="quantidade" value="1"></div>
-                            <div><label class="text-[9px] text-[#c5a059] uppercase">Cupom</label><input type="text" id="cupom"></div>
+                            <div><label class="text-[9px] text-[#c5a059]">PREÇO</label><input type="text" id="preco" required></div>
+                            <div><label class="text-[9px] text-[#c5a059]">OFERTA</label><input type="text" id="promocao"></div>
+                            <div><label class="text-[9px] text-[#c5a059]">ESTOQUE</label><input type="number" id="quantidade" value="1"></div>
                         </div>
                         <div class="flex items-center gap-4">
-                            <div class="flex-1"><label class="text-[9px] text-[#c5a059] uppercase">URL Imagem</label><input type="text" id="imagem"></div>
+                            <div class="flex-1"><label class="text-[9px] text-[#c5a059]">IMAGEM URL</label><input type="text" id="imagem"></div>
                             <img id="pre" src="" class="w-12 h-12 rounded-lg object-contain glass">
                         </div>
                         <div class="flex items-center justify-between glass p-3 rounded-2xl border-[#c5a059]/20 border">
                             <span class="text-[10px] uppercase font-bold text-[#c5a059]">Mais vendido</span>
                             <input type="checkbox" id="maisVendido" class="w-5 h-5 accent-[#c5a059]">
                         </div>
-                        <button type="submit" id="saveBtn" class="btn-gold w-full py-4 rounded-xl text-xs uppercase">Salvar Alterações</button>
-                        <button type="button" id="delBtn" class="hidden w-full text-red-500 text-[10px] uppercase font-bold pt-2" onclick="excluirPerfume()">Excluir Produto</button>
+                        <button type="submit" id="saveBtn" class="btn-gold w-full py-4 rounded-xl text-xs uppercase">Salvar Produto</button>
+                        <button type="button" id="delBtn" class="hidden w-full text-red-500 text-[10px] font-bold uppercase pt-2" onclick="excluirPerfume()">Excluir</button>
                     </form>
                 </div>
 
-                <!-- LISTA -->
                 <div class="lg:col-span-7">
                     <input type="text" id="search" onkeyup="filter()" placeholder="BUSCAR PERFUME..." class="w-full !rounded-full text-center text-xs py-4 glass mb-6 uppercase tracking-[3px]">
                     <div id="productList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
@@ -115,18 +111,18 @@
     </div>
 
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzVHuQ8rcs_ca4WqLzpZJ0jmeNeTcMENg63qpKzJzP4EBkzwsYwbz03d10ZWhNMFxLQzw/exec"; // COLOQUE A URL QUE VOCÊ GERAR NO PASSO A PASSO
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzVHuQ8rcs_ca4WqLzpZJ0jmeNeTcMENg63qpKzJzP4EBkzwsYwbz03d10ZWhNMFxLQzw/exec"; 
         const SENHA_MESTRA = "ticoeteco";
         
         let rawData = [], filteredData = [], currentPage = 1, brandChart;
-        const itemsPerPage = 20; // Mostra mais por página
+        const itemsPerPage = 20;
 
         const maskPrice = { mask: 'R$ num', blocks: { num: { mask: Number, thousandsSeparator: '.', padFractionalZeros: true } } };
         IMask(document.getElementById('preco'), maskPrice);
         IMask(document.getElementById('promocao'), maskPrice);
 
         window.onload = () => { if(localStorage.getItem('lux_auth') === 'true') loginSucess(); };
-        function login() { if(document.getElementById('pass').value === SENHA_MESTRA) { localStorage.setItem('lux_auth', 'true'); loginSucess(); } else { Swal.fire('Erro', 'Acesso Negado', 'error'); } }
+        function login() { if(document.getElementById('pass').value === SENHA_MESTRA) { localStorage.setItem('lux_auth', 'true'); loginSucess(); } else { Swal.fire('Erro', 'Senha Incorreta', 'error'); } }
         function loginSucess() { document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('app').style.display = 'block'; loadData(); }
         function logout() { localStorage.removeItem('lux_auth'); location.reload(); }
 
@@ -134,9 +130,15 @@
             const syncIcon = document.getElementById('syncIcon');
             syncIcon.classList.add('sync-spin');
             try {
-                const response = await fetch(`${WEB_APP_URL}?t=${Date.now()}`);
-                const data = await response.json();
+                // FORÇAR O NAVEGADOR A NÃO USAR CACHE (Cache-Bust)
+                const url = `${WEB_APP_URL}?nocache=${new Date().getTime()}`;
+                const response = await fetch(url, { cache: "no-store" });
                 
+                if (!response.ok) throw new Error("Erro na rede");
+                
+                const data = await response.json();
+                if(!Array.isArray(data)) throw new Error("JSON Inválido");
+
                 rawData = data.slice(1)
                              .filter(r => r[0] !== "" && r[3] !== "")
                              .sort((a, b) => Number(a[0]) - Number(b[0]));
@@ -145,7 +147,8 @@
                 updateDashboard();
                 renderList();
             } catch(e) {
-                Swal.fire('Erro', 'Falha ao conectar com a planilha. Verifique o URL ou publique novamente.', 'error');
+                console.error("Erro de Conexão:", e);
+                Swal.fire('Falha na Conexão', 'Não foi possível ler a planilha. Tente abrir o site em uma aba anônima ou publique o script novamente.', 'error');
             } finally { syncIcon.classList.remove('sync-spin'); }
         }
 
@@ -192,7 +195,9 @@
                         ${temOferta ? '<span class="bg-red-600 text-white text-[7px] font-black px-2 py-0.5 rounded-full uppercase">Oferta</span>' : ''}
                     </div>
                     <div class="text-[10px] font-bold text-[#c5a059] opacity-30">#${row[0]}</div>
-                    <div class="w-12 h-12 rounded-xl flex items-center justify-center p-1"><img src="${row[6] || ''}" class="max-h-full object-contain"></div>
+                    <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center p-1">
+                        <img src="${row[6] || ''}" class="max-h-full object-contain" onerror="this.src='https://via.placeholder.com/50?text=?'">
+                    </div>
                     <div class="flex-1 min-w-0 pr-10">
                         <p class="text-[8px] text-[#c5a059] font-black uppercase">${row[1]}</p>
                         <h4 class="text-[10px] font-bold text-white uppercase truncate">${row[3]}</h4>
@@ -201,7 +206,7 @@
                                 <span class="text-[9px] ${temOferta ? 'text-gray-500 line-through' : 'text-white'}">${row[4]}</span>
                                 ${temOferta ? `<span class="text-[10px] text-[#c5a059] font-bold">${row[5]}</span>` : ''}
                             </div>
-                            <span class="text-[8px] text-gray-400">Est: ${row[17] || 0}</span>
+                            <span class="text-[8px] text-gray-400 font-bold">QTD: ${row[17] || 0}</span>
                         </div>
                     </div>
                 `;
@@ -251,15 +256,15 @@
                 Swal.fire('Pronto!', 'Inventário atualizado!', 'success');
                 setTimeout(loadData, 1500); clearForm();
             } catch(e) { Swal.fire('Erro', 'Falha ao salvar.', 'error'); }
-            btn.disabled = false; btn.innerText = "Salvar Alterações";
+            btn.disabled = false; btn.innerText = "Salvar Produto";
         };
 
         async function excluirPerfume() {
-            const res = await Swal.fire({ title: 'Excluir?', text: 'Isso removerá da planilha!', icon: 'warning', showCancelButton: true });
+            const res = await Swal.fire({ title: 'Excluir?', text: 'Confirmar exclusão?', icon: 'warning', showCancelButton: true });
             if (res.isConfirmed) {
                 const id = document.getElementById('id').value;
                 await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({id: id, action: 'delete'}) });
-                Swal.fire('Excluído!', '', 'success');
+                Swal.fire('Removido!', '', 'success');
                 setTimeout(loadData, 1000); clearForm();
             }
         }
