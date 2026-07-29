@@ -3,31 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lux Admin - Assinatura Parfum</title>
+    <title>Gestão Premium - Assinatura Parfum</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
-        :root { --verde: #00160f; --dourado: #c5a059; --dourado-claro: #fcf6ba; }
+        :root { --verde: #00160f; --verde-claro: #002419; --dourado: #c5a059; --dourado-brilho: #fcf6ba; }
         
         body { 
             font-family: 'Montserrat', sans-serif; 
             background-color: var(--verde); 
             color: white;
-            background-image: url('data:image/svg+xml,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');
-            background-attachment: fixed;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at top right, var(--verde-claro), var(--verde));
         }
 
         .font-luxury { font-family: 'Cinzel', serif; }
 
         .glass { 
             background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(25px); 
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(197, 160, 89, 0.15); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(197, 160, 89, 0.2); 
         }
+
+        input, textarea { 
+            background: rgba(0,0,0,0.5) !important; 
+            border: 1px solid rgba(197, 160, 89, 0.15) !important; 
+            color: white !important; 
+            padding: 12px; 
+            border-radius: 12px; 
+            font-size: 14px;
+            width: 100%;
+        }
+        input:focus { border-color: var(--dourado) !important; outline: none; box-shadow: 0 0 10px rgba(197, 160, 89, 0.2); }
 
         .btn-gold { 
             background: linear-gradient(135deg, #c5a059 0%, #fcf6ba 50%, #b38728 100%); 
@@ -35,117 +46,126 @@
             font-weight: 800; 
             text-transform: uppercase;
             letter-spacing: 2px;
-            transition: all 0.3s ease;
-        }
-        .btn-gold:hover { transform: scale(1.02); filter: brightness(1.1); }
-
-        .sync-btn-header {
-            background: rgba(197, 160, 89, 0.1);
-            border: 1px solid var(--dourado);
-            color: var(--dourado);
-            padding: 8px 16px;
-            border-radius: 50px;
-            font-size: 10px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
             transition: all 0.3s;
         }
-        .sync-btn-header:active { transform: scale(0.95); }
-        .sync-btn-header svg { transition: transform 0.5s; }
-        .sync-btn-header:hover svg { transform: rotate(180deg); }
+        .btn-gold:hover { transform: scale(1.01); filter: brightness(1.1); }
+        .btn-gold:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .skeleton { background: rgba(255,255,255,0.05); animation: pulse 1.5s infinite; border-radius: 20px; }
-        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.8; } }
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: var(--dourado); border-radius: 10px; }
+
+        .nav-item { opacity: 0.5; transition: 0.3s; cursor: pointer; }
+        .nav-item.active { opacity: 1; color: var(--dourado); border-bottom: 2px solid var(--dourado); }
+
+        .sync-height { height: auto; min-height: 700px; }
+        @media (min-width: 1024px) { .sync-height { height: 750px; } }
 
         .fade-in { animation: fadeIn 0.6s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .sync-height { max-height: 850px; }
     </style>
 </head>
-<body class="min-h-screen pb-20">
+<body class="min-h-screen">
 
-    <!-- LOGIN -->
+    <!-- LOGIN (Sem logo, focado no Dourado) -->
     <div id="loginOverlay" class="fixed inset-0 bg-[#00120b] z-[9999] flex items-center justify-center p-4">
-        <div class="glass p-10 rounded-[50px] w-full max-w-sm text-center shadow-2xl fade-in">
-            <img src="logo.png" alt="Logo" class="w-56 mx-auto mb-10 drop-shadow-xl">
-            <input type="password" id="pass" placeholder="CHAVE MESTRA" class="w-full mb-8 text-center tracking-[10px] p-4 rounded-2xl bg-black/50 border border-[#c5a059]/20 text-white outline-none focus:border-[#c5a059]">
-            <button onclick="login()" class="btn-gold w-full py-5 rounded-2xl text-xs">Acessar Painel</button>
+        <div class="glass p-10 rounded-[40px] w-full max-w-sm text-center shadow-2xl fade-in">
+            <h1 class="font-luxury text-[#c5a059] text-3xl mb-2 tracking-[8px]">ASSINATURA</h1>
+            <p class="text-[10px] text-gray-500 uppercase tracking-[4px] mb-10">Painel de Controle Privado</p>
+            <input type="password" id="pass" placeholder="SENHA MESTRA" class="text-center tracking-[12px] mb-8">
+            <button onclick="login()" class="btn-gold w-full py-5 rounded-2xl text-xs">Entrar no Sistema</button>
         </div>
     </div>
 
-    <!-- APP -->
-    <div id="app" class="hidden">
+    <!-- DASHBOARD -->
+    <div id="app" class="hidden pb-20">
         
-        <header class="glass sticky top-0 z-50 mb-8 px-6 md:px-16 py-4 flex justify-between items-center min-h-[110px]">
-            <img src="logo.png" alt="Logo" class="h-16 md:h-24">
-            
+        <!-- HEADER (Limpo, sem logo) -->
+        <header class="glass sticky top-0 z-50 mb-8 px-6 md:px-16 py-6 flex justify-between items-center">
+            <div>
+                <h1 class="font-luxury text-[#c5a059] text-xl tracking-widest">ASSINATURA <span class="text-white">PARFUM</span></h1>
+                <p class="text-[8px] text-gray-500 uppercase tracking-widest">Gestão de Inventário</p>
+            </div>
             <div class="flex items-center gap-4">
-                <!-- BOTÃO DE SINCRONIZAR NO TOPO -->
-                <button onclick="loadData()" class="sync-btn-header">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-                    SINCRONIZAR PLANILHA
+                <button onclick="loadData()" class="hidden md:flex items-center gap-2 border border-[#c5a059]/40 text-[#c5a059] px-4 py-2 rounded-full text-[10px] font-bold hover:bg-[#c5a059]/10 transition">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                    SINCRONIZAR
                 </button>
-                <button onclick="logout()" class="bg-red-500/10 text-red-500 px-4 py-2 rounded-xl text-[10px] font-bold border border-red-500/20">SAIR</button>
+                <button onclick="logout()" class="text-red-500 text-[10px] font-bold uppercase tracking-widest px-4">Sair</button>
             </div>
         </header>
 
         <div class="max-w-7xl mx-auto px-6">
             
+            <!-- STATS -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="glass p-6 rounded-3xl">
+                    <p class="text-gray-500 text-[9px] uppercase tracking-widest">Estoque</p>
+                    <h3 id="statTotal" class="text-2xl font-luxury text-[#c5a059] mt-1">--</h3>
+                </div>
+                <div class="glass p-6 rounded-3xl">
+                    <p class="text-gray-500 text-[9px] uppercase tracking-widest">Marcas</p>
+                    <h3 id="statMarcas" class="text-2xl font-luxury text-[#c5a059] mt-1">--</h3>
+                </div>
+                <div class="glass p-6 rounded-3xl col-span-2 hidden md:block">
+                    <canvas id="brandChart" class="max-h-[60px]"></canvas>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 
                 <!-- FORMULÁRIO -->
-                <section id="sec-form" class="lg:col-span-5 section-content lg:block">
-                    <div class="glass p-8 md:p-10 rounded-[45px] shadow-2xl border border-[#c5a059]/20">
-                        <div class="flex justify-between items-center mb-8 border-b border-[#c5a059]/10 pb-6">
-                            <h2 id="formTitle" class="font-luxury text-[#c5a059] text-xl">Gestão de Produto</h2>
-                            <button onclick="clearForm()" class="text-[9px] border border-[#c5a059] text-[#c5a059] px-4 py-1 rounded-full uppercase hover:bg-[#c5a059]/10 transition">Limpar</button>
+                <section id="sec-form" class="lg:col-span-5 section-content lg:block fade-in">
+                    <div class="glass p-8 rounded-[40px] shadow-2xl border border-[#c5a059]/10">
+                        <div class="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
+                            <h2 id="formTitle" class="font-luxury text-[#c5a059]">Novo Produto</h2>
+                            <button onclick="clearForm()" class="text-[9px] text-[#c5a059] border border-[#c5a059]/30 px-3 py-1 rounded-full uppercase">Reset</button>
                         </div>
                         
                         <form id="form" class="space-y-4">
                             <input type="hidden" id="id">
                             <div class="grid grid-cols-2 gap-4">
-                                <input type="text" id="marca" placeholder="MARCA" class="p-4 rounded-xl bg-black/40 border border-white/10 text-sm">
-                                <input type="text" id="origem" placeholder="ORIGEM" class="p-4 rounded-xl bg-black/40 border border-white/10 text-sm">
+                                <input type="text" id="marca" placeholder="MARCA" required>
+                                <input type="text" id="origem" placeholder="ORIGEM">
                             </div>
-                            <input type="text" id="nome" placeholder="NOME DO PERFUME" class="w-full p-4 rounded-xl bg-black/40 border border-white/10 text-sm">
+                            <input type="text" id="nome" placeholder="NOME DO PERFUME" required>
                             <div class="grid grid-cols-2 gap-4">
-                                <input type="number" step="0.01" id="preco" placeholder="PREÇO VENDA" class="p-4 rounded-xl bg-black/40 border border-white/10 text-sm">
-                                <input type="number" step="0.01" id="promocao" placeholder="PREÇO PROMO" class="p-4 rounded-xl bg-black/40 border border-white/10 text-sm">
+                                <input type="number" step="0.01" id="preco" placeholder="PREÇO" required>
+                                <input type="number" step="0.01" id="promocao" placeholder="PROMOÇÃO (OPCIONAL)">
+                            </div>
+                            <input type="text" id="imagem" placeholder="LINK DA IMAGEM" oninput="document.getElementById('pre').src=this.value">
+                            
+                            <div class="glass p-4 rounded-2xl text-center">
+                                <img id="pre" src="" class="h-32 w-full object-contain mx-auto rounded-lg">
+                                <p class="text-[8px] text-gray-500 mt-2 uppercase">Preview da Imagem</p>
                             </div>
 
-                            <div class="glass p-4 rounded-3xl text-center border-dashed border-[#c5a059]/30 border-2">
-                                <label class="btn-gold px-6 py-2 rounded-xl cursor-pointer text-[10px] inline-block mb-2">
-                                    ESCOLHER IMAGEM
-                                    <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="uploadImage(this)">
-                                </label>
-                                <input type="hidden" id="imagem">
-                                <img id="pre" src="" class="h-32 w-full object-contain mx-auto rounded-xl">
+                            <div class="grid grid-cols-4 gap-2">
+                                <input type="number" id="doce" placeholder="DOCE" value="0">
+                                <input type="number" id="amadeirado" placeholder="AMAD" value="0">
+                                <input type="number" id="citrico" placeholder="CITR" value="0">
+                                <input type="number" id="especiado" placeholder="ESPIC" value="0">
                             </div>
 
-                            <button type="submit" id="saveBtn" class="btn-gold w-full py-5 rounded-2xl text-[11px] uppercase shadow-lg">Publicar Alterações</button>
+                            <button type="submit" id="saveBtn" class="btn-gold w-full py-5 rounded-2xl text-xs uppercase shadow-xl mt-4">Salvar na Planilha</button>
                         </form>
                     </div>
                 </section>
 
-                <!-- LISTA DE ESTOQUE -->
-                <section id="sec-list" class="lg:col-span-7 section-content lg:block">
-                    <div class="glass p-8 rounded-[45px] shadow-2xl flex flex-col sync-height">
+                <!-- ESTOQUE -->
+                <section id="sec-list" class="lg:col-span-7 section-content lg:block fade-in">
+                    <div class="glass p-8 rounded-[40px] shadow-2xl flex flex-col sync-height">
                         <div class="mb-6 flex gap-4">
-                            <input type="text" id="search" onkeyup="filter()" placeholder="BUSCAR PERFUME..." class="w-full !rounded-full text-center text-xs py-4 glass !bg-black/40 border-[#c5a059]/20">
+                            <input type="text" id="search" onkeyup="filter()" placeholder="FILTRAR POR NOME OU MARCA..." class="text-center text-[10px] tracking-widest !rounded-full">
                         </div>
                         
                         <div id="list" class="flex-1 overflow-y-auto custom-scroll pr-2 space-y-4">
-                            <!-- O SISTEMA VAI INJETAR OS PRODUTOS AQUI -->
-                            <p class="text-center text-gray-500 py-10">Aguardando sincronização...</p>
+                            <p class="text-center text-gray-600 py-20 uppercase text-[10px] tracking-widest">Carregando catálogo...</p>
                         </div>
 
-                        <div class="flex justify-between items-center mt-6 pt-4 border-t border-white/10">
-                            <button onclick="prevPage()" class="text-[10px] uppercase font-bold text-[#c5a059]">Anterior</button>
-                            <span id="pageInfo" class="text-[10px] font-bold tracking-widest text-gray-500">PÁGINA 1</span>
-                            <button onclick="nextPage()" class="text-[10px] uppercase font-bold text-[#c5a059]">Próxima</button>
+                        <div class="flex justify-between items-center mt-6 pt-4 border-t border-white/5">
+                            <button onclick="prevPage()" class="text-[10px] text-[#c5a059] uppercase font-bold px-4">Anterior</button>
+                            <span id="pageInfo" class="text-[10px] text-gray-500 font-bold uppercase">Página 1</span>
+                            <button onclick="nextPage()" class="text-[10px] text-[#c5a059] uppercase font-bold px-4">Próxima</button>
                         </div>
                     </div>
                 </section>
@@ -154,49 +174,70 @@
         </div>
     </div>
 
+    <!-- MOBILE NAV -->
+    <nav class="fixed bottom-0 left-0 right-0 h-16 glass flex justify-around items-center lg:hidden z-50">
+        <div class="nav-item active flex flex-col items-center" onclick="switchTab('sec-dash', this)">
+            <span class="text-[9px] uppercase font-bold">Resumo</span>
+        </div>
+        <div class="nav-item flex flex-col items-center" onclick="switchTab('sec-form', this)">
+            <span class="text-[9px] uppercase font-bold">Editar</span>
+        </div>
+        <div class="nav-item flex flex-col items-center" onclick="switchTab('sec-list', this)">
+            <span class="text-[9px] uppercase font-bold">Lista</span>
+        </div>
+    </nav>
+
     <script>
-        // VERIFICAÇÃO DO LINK - O LINK ABAIXO É O SEU GOOGLE APPS SCRIPT
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyOOqVCfJPAtxcxzYJoIssXG2H40iD1OvTL3VtLWz78VROnrgEF77ACQqFHLDdnlSYmiw/exec";
-        const SENHA_ACESSO = "ticoeteco";
-        const IMGBB_API_KEY = "64f9f49c0490b79361719b0959146ec6";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzFn1cM4jrZlSmzzeByhNy6HPSwUdU8lD-Ix9kAjBoMUiJqvfLCMtattLIh5OV9ZR0RNw/exec";
+        const SENHA_MESTRA = "ticoeteco";
 
         let rawData = [];
         let filteredData = [];
         let currentPage = 1;
         const itemsPerPage = 10;
+        let brandChart;
 
         function login() {
-            if(document.getElementById('pass').value === SENHA_ACESSO) {
+            if(document.getElementById('pass').value === SENHA_MESTRA) {
                 document.getElementById('loginOverlay').remove();
                 document.getElementById('app').classList.remove('hidden');
                 loadData();
-            } else { alert("Chave incorreta"); }
+            } else { alert("Acesso negado."); }
         }
 
         function logout() { location.reload(); }
 
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
         async function loadData() {
             const listDiv = document.getElementById('list');
-            listDiv.innerHTML = `
-                <div class="col-span-full py-10 text-center">
-                    <div class="animate-spin h-8 w-8 border-4 border-[#c5a059] rounded-full border-t-transparent mx-auto mb-4"></div>
-                    <p class="text-[10px] text-[#c5a059] animate-pulse tracking-[3px] uppercase font-bold">Sincronizando Nuvem...</p>
-                </div>`;
-            
             try {
                 const res = await fetch(WEB_APP_URL);
-                if (!res.ok) throw new Error("Erro na rede");
                 const data = await res.json();
                 
-                // Processando dados
-                rawData = data.slice(1).reverse(); // Inverte para os mais novos aparecerem primeiro
+                // O Google retorna um Array de Arrays. Vamos formatar para objeto.
+                rawData = data.slice(1).reverse(); // Removemos o cabeçalho e invertemos
                 filteredData = [...rawData];
                 
+                renderStats(data);
                 renderList();
+                updateChart();
             } catch (e) {
-                listDiv.innerHTML = `<p class="text-center text-red-500 py-10">ERRO: Verifique se o Google Scripts está publicado para 'Qualquer Pessoa'.</p>`;
-                console.error(e);
+                listDiv.innerHTML = "<p class='text-center text-red-500 py-20'>ERRO AO CARREGAR. VERIFIQUE O SCRIPT GOOGLE.</p>";
             }
+        }
+
+        function renderStats(data) {
+            const items = data.slice(1).filter(r => r[3]);
+            document.getElementById('statTotal').innerText = items.length;
+            const marcas = [...new Set(items.map(r => r[1]))].length;
+            document.getElementById('statMarcas').innerText = marcas;
         }
 
         function renderList() {
@@ -207,27 +248,24 @@
             const end = start + itemsPerPage;
             const paginatedItems = filteredData.slice(start, end);
 
-            if(paginatedItems.length === 0) {
-                listDiv.innerHTML = "<p class='text-center text-gray-600 py-10'>Nenhum perfume encontrado.</p>";
-                return;
-            }
-
             paginatedItems.forEach(row => {
-                if(!row[3]) return; // Pula se não tiver nome
+                if(!row[3]) return;
                 const card = document.createElement('div');
-                card.className = "glass p-4 rounded-3xl flex items-center gap-4 cursor-pointer hover:border-[#c5a059] transition fade-in";
-                card.onclick = () => fill(row);
+                card.className = "glass p-4 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-[#c5a059] transition-all";
+                card.onclick = () => { 
+                    fill(row); 
+                    if(window.innerWidth < 1024) switchTab('sec-form', document.querySelectorAll('.nav-item')[1]); 
+                };
                 card.innerHTML = `
-                    <img src="${row[6]}" class="w-14 h-14 object-contain bg-white/5 rounded-xl border border-white/5 shadow-inner">
+                    <img src="${row[6] || 'assinatura.png'}" class="w-12 h-12 object-contain bg-white/5 rounded-lg">
                     <div class="flex-1 overflow-hidden">
-                        <p class="text-[9px] text-[#c5a059] font-bold uppercase truncate">${row[1]}</p>
-                        <h4 class="text-xs font-bold truncate text-white">${row[3]}</h4>
+                        <p class="text-[8px] text-[#c5a059] font-bold uppercase truncate">${row[1]}</p>
+                        <h4 class="text-[11px] font-bold truncate">${row[3]}</h4>
                         <p class="text-[10px] text-gray-500">R$ ${row[4]}</p>
                     </div>
                 `;
                 listDiv.appendChild(card);
             });
-
             document.getElementById('pageInfo').innerText = `PÁGINA ${currentPage}`;
         }
 
@@ -243,41 +281,28 @@
             document.getElementById('promocao').value = row[5];
             document.getElementById('imagem').value = row[6];
             document.getElementById('pre').src = row[6];
-            document.getElementById('formTitle').innerText = "Editando Registro";
+            document.getElementById('doce').value = row[13] || 0;
+            document.getElementById('amadeirado').value = row[14] || 0;
+            document.getElementById('citrico').value = row[15] || 0;
+            document.getElementById('especiado').value = row[16] || 0;
+            document.getElementById('formTitle').innerText = "Editando Item";
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         function clearForm() {
             document.getElementById('form').reset();
             document.getElementById('pre').src = "";
-            document.getElementById('formTitle').innerText = "Gestão de Produto";
-            // Sugere próximo ID
+            document.getElementById('formTitle').innerText = "Novo Produto";
             const ids = rawData.map(r => parseInt(r[0])).filter(n => !isNaN(n));
             document.getElementById('id').value = ids.length > 0 ? Math.max(...ids) + 1 : 1;
-        }
-
-        async function uploadImage(input) {
-            if (!input.files[0]) return;
-            const btn = document.getElementById('saveBtn');
-            btn.disabled = true; btn.innerText = "Subindo Imagem...";
-            
-            const formData = new FormData();
-            formData.append('image', input.files[0]);
-            
-            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
-            const data = await res.json();
-            
-            document.getElementById('imagem').value = data.data.url;
-            document.getElementById('pre').src = data.data.url;
-            btn.disabled = false; btn.innerText = "Publicar Alterações";
         }
 
         document.getElementById('form').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('saveBtn');
-            btn.disabled = true; btn.innerText = "Sincronizando...";
+            btn.disabled = true; btn.innerText = "SALVANDO...";
             
-            const body = {
+            const payload = {
                 id: document.getElementById('id').value,
                 marca: document.getElementById('marca').value,
                 origem: document.getElementById('origem').value,
@@ -285,23 +310,57 @@
                 preco: document.getElementById('preco').value,
                 promocao: document.getElementById('promocao').value || "0",
                 imagem: document.getElementById('imagem').value,
-                action: 'edit'
+                maisVendido: "0",
+                descricao: "",
+                notasTopo: "", notasCoracao: "", notasBase: "", cupom: "",
+                doce: document.getElementById('doce').value,
+                amadeirado: document.getElementById('amadeirado').value,
+                citrico: document.getElementById('citrico').value,
+                especiado: document.getElementById('especiado').value
             };
 
-            await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(body) });
-            alert("Sucesso! A planilha foi atualizada.");
-            btn.disabled = false; btn.innerText = "Publicar Alterações";
-            loadData();
+            try {
+                await fetch(WEB_APP_URL, { 
+                    method: 'POST', 
+                    mode: 'no-cors', 
+                    body: JSON.stringify(payload) 
+                });
+                alert("Sucesso! Aguarde 5 segundos e atualize a lista.");
+                btn.disabled = false; btn.innerText = "SALVAR NA PLANILHA";
+                loadData();
+            } catch (err) {
+                alert("Erro ao salvar.");
+                btn.disabled = false; btn.innerText = "SALVAR NA PLANILHA";
+            }
         };
 
         function filter() {
             const val = document.getElementById('search').value.toLowerCase();
-            filteredData = rawData.filter(c => 
-                c[1].toString().toLowerCase().includes(val) || 
-                c[3].toString().toLowerCase().includes(val)
+            filteredData = rawData.filter(r => 
+                r[1].toString().toLowerCase().includes(val) || 
+                r[3].toString().toLowerCase().includes(val)
             );
             currentPage = 1;
             renderList();
+        }
+
+        function updateChart() {
+            const counts = {};
+            rawData.forEach(r => { if(r[1]) counts[r[1]] = (counts[r[1]] || 0) + 1 });
+            
+            if (brandChart) brandChart.destroy();
+            const ctx = document.getElementById('brandChart').getContext('2d');
+            brandChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(counts),
+                    datasets: [{ data: Object.values(counts), backgroundColor: '#c5a059' }]
+                },
+                options: { 
+                    plugins: { legend: { display: false } }, 
+                    scales: { y: { display: false }, x: { ticks: { color: '#555', font: { size: 7 } } } } 
+                }
+            });
         }
     </script>
 </body>
