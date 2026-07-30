@@ -126,7 +126,7 @@
     </div>
 
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzVHuQ8rcs_ca4WqLzpZJ0jmeNeTcMENg63qpKzJzP4EBkzwsYwbz03d10ZWhNMFxLQzw/exec"; 
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyLTrXUuIDZE1JHTU0bD0ZW84vTUseE1Bdh82K62vwkXt-dVs2uPKezcvCV6T6eNemhQg/exec"; 
         const SENHA_MESTRA = "ticoeteco";
         let rawData = [], filteredData = [], currentPage = 1, brandChart = null;
         const itemsPerPage = 8;
@@ -232,18 +232,22 @@
         document.getElementById('perfumeForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('saveBtn');
-            btn.disabled = true; btn.innerText = "Salvando...";
-            const cleanValue = (val) => val.split(',')[0].replace(/\D/g, '');
+            btn.disabled = true; btn.innerText = "Sincronizando...";
+            
+            const cleanValue = (val) => {
+                if(!val) return "0";
+                return val.replace('R$ ', '').replace(/\./g, '').split(',')[0].replace(/\D/g, '');
+            };
 
-            let nextId = 1;
-            if (rawData.length > 0) {
+            let currentId = document.getElementById('id').value;
+            if (!currentId) {
                 const ids = rawData.map(r => parseInt(r[0])).filter(n => !isNaN(n));
-                nextId = ids.length > 0 ? Math.max(...ids) + 1 : 1;
+                currentId = ids.length > 0 ? (Math.max(...ids) + 1).toString() : "1";
             }
 
             const payload = {
                 action: 'save',
-                id: document.getElementById('id').value || nextId.toString(),
+                id: currentId,
                 marca: document.getElementById('marca').value,
                 nome: document.getElementById('nome').value,
                 preco: cleanValue(document.getElementById('preco').value),
@@ -263,20 +267,30 @@
             };
 
             try {
-                // Alteração crítica: usando text/plain para evitar bloqueios de CORS
+                // Enviamos como text/plain para evitar o erro de CORS do Google
                 await fetch(WEB_APP_URL, { 
                     method: 'POST', 
+                    mode: 'no-cors',
                     body: JSON.stringify(payload),
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                    headers: { 'Content-Type': 'text/plain' }
                 });
-                Swal.fire('Sucesso!', 'Dados sincronizados.', 'success');
-                setTimeout(loadData, 2000);
+                
+                Swal.fire({
+                    title: 'Sucesso!',
+                    text: 'Dados enviados para a planilha.',
+                    icon: 'success',
+                    timer: 2000
+                });
+                
+                setTimeout(loadData, 2500);
                 clearForm();
             } catch(e) { 
-                Swal.fire('Aviso', 'Sincronização enviada.', 'info'); 
-                setTimeout(loadData, 2000);
+                Swal.fire('Aviso', 'O comando foi enviado.', 'info');
+                setTimeout(loadData, 2500);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Salvar na Planilha";
             }
-            btn.disabled = false; btn.innerText = "Salvar na Planilha";
         };
 
         async function excluirPerfume() {
@@ -285,11 +299,12 @@
                 const id = document.getElementById('id').value;
                 await fetch(WEB_APP_URL, { 
                     method: 'POST', 
+                    mode: 'no-cors',
                     body: JSON.stringify({id: id, action: 'delete'}),
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                    headers: { 'Content-Type': 'text/plain' }
                 });
                 Swal.fire('Excluído!', '', 'success');
-                setTimeout(loadData, 1500);
+                setTimeout(loadData, 2000);
                 clearForm();
             }
         }
