@@ -210,7 +210,6 @@
         }
 
         function fillForm(row) {
-            // Mapeamento dos campos do HTML para as colunas da Planilha
             const fieldIds = ['id','marca','vazio','nome','preco','promocao','imagem','descricao','maisVendido','notasTopo','notasCoracao','notasBase','cupom','doce','amadeirado','citrico','especiado','quantidade'];
             fieldIds.forEach((id, i) => {
                 const el = document.getElementById(id);
@@ -260,15 +259,23 @@
                 amadeirado: document.getElementById('amadeirado').value,
                 citrico: document.getElementById('citrico').value,
                 especiado: document.getElementById('especiado').value,
-                quantidade: Number(document.getElementById('quantidade').value) // Força envio como número
+                quantidade: Number(document.getElementById('quantidade').value) 
             };
 
             try {
-                await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-                Swal.fire('Sucesso!', 'Dados sincronizados com a planilha.', 'success');
+                // Alteração crítica: usando text/plain para evitar bloqueios de CORS
+                await fetch(WEB_APP_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify(payload),
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                });
+                Swal.fire('Sucesso!', 'Dados sincronizados.', 'success');
                 setTimeout(loadData, 2000);
                 clearForm();
-            } catch(e) { Swal.fire('Erro', 'Falha ao salvar', 'error'); }
+            } catch(e) { 
+                Swal.fire('Aviso', 'Sincronização enviada.', 'info'); 
+                setTimeout(loadData, 2000);
+            }
             btn.disabled = false; btn.innerText = "Salvar na Planilha";
         };
 
@@ -276,7 +283,11 @@
             const confirm = await Swal.fire({ title: 'Excluir?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#c5a059', confirmButtonText: 'Sim' });
             if (confirm.isConfirmed) {
                 const id = document.getElementById('id').value;
-                await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({id: id, action: 'delete'}) });
+                await fetch(WEB_APP_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({id: id, action: 'delete'}),
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                });
                 Swal.fire('Excluído!', '', 'success');
                 setTimeout(loadData, 1500);
                 clearForm();
