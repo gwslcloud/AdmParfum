@@ -109,7 +109,7 @@
                         <div>
                             <label>URL Imagem</label>
                             <div class="flex gap-2">
-                                <input type="text" id="imagem" placeholder="Link da foto ou use o botão ->">
+                                <input type="text" id="imagem" value="https://lh3.googleusercontent.com/d/">
                                 <label class="btn-gold px-4 py-2 rounded-xl cursor-pointer flex items-center justify-center text-[10px] font-bold min-w-[80px]">
                                     UPAR
                                     <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="uploadImage(this)">
@@ -149,40 +149,21 @@
         function loginSucess() { document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('app').style.display = 'block'; loadData(); }
         function logout() { localStorage.removeItem('lux_auth'); location.reload(); }
 
-        // NOVA FUNÇÃO: Faz o upload da foto para o Drive via Script
         async function uploadImage(input) {
             if (!input.files || !input.files[0]) return;
             const file = input.files[0];
             const reader = new FileReader();
-            
             Swal.fire({ title: 'Subindo foto...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-
             reader.onload = async function(e) {
-                const payload = {
-                    action: 'upload',
-                    fileName: file.name,
-                    fileData: e.target.result
-                };
-
+                const payload = { action: 'upload', fileName: file.name, fileData: e.target.result };
                 try {
-                    // Como precisamos do LINK de volta, aqui não usamos no-cors
-                    // Usamos o redirecionamento do Apps Script para pegar o JSON
-                    const response = await fetch(WEB_APP_URL, {
-                        method: 'POST',
-                        body: JSON.stringify(payload)
-                    });
+                    const response = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
                     const result = await response.json();
-                    
                     if(result.result === 'success') {
                         document.getElementById('imagem').value = result.url;
-                        Swal.fire('Pronto!', 'Foto enviada com sucesso.', 'success');
-                    } else {
-                        throw new Error(result.message);
-                    }
-                } catch (err) {
-                    Swal.fire('Erro no Upload', 'Certifique-se de que o script está com acesso ao Drive.', 'error');
-                    console.error(err);
-                }
+                        Swal.fire('Pronto!', 'Foto enviada.', 'success');
+                    } else { throw new Error(result.message); }
+                } catch (err) { Swal.fire('Erro', 'Falha no upload', 'error'); }
             };
             reader.readAsDataURL(file);
         }
@@ -230,7 +211,6 @@
                 const temOferta = row[5] && row[5] != "0" && row[5] != "";
                 const ehMaisVendido = row[8] == "1";
                 const indisponivel = estoque <= 0;
-
                 const div = document.createElement('div');
                 div.className = `card-perfume p-4 rounded-2xl flex items-center gap-4 glass relative ${indisponivel ? 'opacity-60' : ''}`;
                 div.onclick = () => fillForm(row);
@@ -246,9 +226,7 @@
                         <h4 class="text-[10px] font-bold truncate uppercase text-white">${row[3]}</h4>
                         <div class="flex justify-between items-center mt-1">
                             <span class="text-[10px] text-white font-bold">R$ ${row[4]}</span>
-                            <span class="text-[8px] ${indisponivel ? 'text-red-500 font-black' : 'text-gray-400'} uppercase">
-                                ${indisponivel ? 'Indisponível' : 'Estoque: ' + estoque}
-                            </span>
+                            <span class="text-[8px] ${indisponivel ? 'text-red-500 font-black' : 'text-gray-400'} uppercase">${indisponivel ? 'Indisponível' : 'Estoque: ' + estoque}</span>
                         </div>
                     </div>`;
                 list.appendChild(div);
@@ -262,7 +240,11 @@
                 const el = document.getElementById(id);
                 if(!el) return;
                 if(el.type === 'checkbox') el.checked = row[i] == "1";
-                else el.value = row[i] || "";
+                else {
+                    // Se estiver preenchendo a imagem e estiver vazio na planilha, mantém o prefixo
+                    if(id === 'imagem' && (!row[i] || row[i] === "")) el.value = "https://lh3.googleusercontent.com/d/";
+                    else el.value = row[i] || "";
+                }
             });
             document.getElementById('formTitle').innerText = "Editando Registro";
             document.getElementById('delBtn').classList.remove('hidden');
@@ -272,6 +254,7 @@
         function clearForm() {
             document.getElementById('perfumeForm').reset();
             document.getElementById('id').value = "";
+            document.getElementById('imagem').value = "https://lh3.googleusercontent.com/d/";
             document.getElementById('formTitle').innerText = "Gerenciar";
             document.getElementById('delBtn').classList.add('hidden');
         }
@@ -280,18 +263,12 @@
             e.preventDefault();
             const btn = document.getElementById('saveBtn');
             btn.disabled = true; btn.innerText = "Sincronizando...";
-            
-            const cleanValue = (val) => {
-                if(!val) return "0";
-                return val.replace('R$ ', '').replace(/\./g, '').split(',')[0].replace(/\D/g, '');
-            };
-
+            const cleanValue = (val) => val ? val.replace('R$ ', '').replace(/\./g, '').split(',')[0].replace(/\D/g, '') : "0";
             let currentId = document.getElementById('id').value;
             if (!currentId) {
                 const ids = rawData.map(r => parseInt(r[0])).filter(n => !isNaN(n));
                 currentId = ids.length > 0 ? (Math.max(...ids) + 1).toString() : "1";
             }
-
             const payload = {
                 action: 'save',
                 id: currentId,
@@ -312,18 +289,16 @@
                 especiado: document.getElementById('especiado').value,
                 quantidade: Number(document.getElementById('quantidade').value) 
             };
-
             try {
                 await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
                 Swal.fire({ title: 'Sucesso!', text: 'Dados salvos.', icon: 'success', timer: 2000 });
                 setTimeout(loadData, 2500);
                 clearForm();
             } catch(e) { 
-                Swal.fire('Aviso', 'Sincronização concluída.', 'info');
+                Swal.fire('Aviso', 'Sincronização enviada.', 'info');
                 setTimeout(loadData, 2500);
             } finally {
-                btn.disabled = false;
-                btn.innerText = "Salvar na Planilha";
+                btn.disabled = false; btn.innerText = "Salvar na Planilha";
             }
         };
 
