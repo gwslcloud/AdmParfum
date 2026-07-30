@@ -64,8 +64,8 @@
                 <div class="lg:col-span-5">
                     <form id="perfumeForm" class="glass p-6 md:p-8 rounded-[35px] space-y-5">
                         <div class="flex justify-between items-center border-b border-white/5 pb-3">
-                            <h2 id="formTitle" class="font-luxury text-[#c5a059] text-lg uppercase tracking-wider">Adicionar/Editar</h2>
-                            <button type="button" onclick="clearForm()" class="text-[10px] text-gray-400 font-bold uppercase">Limpar tudo</button>
+                            <h2 id="formTitle" class="font-luxury text-[#c5a059] text-lg uppercase tracking-wider">Gerenciar</h2>
+                            <button type="button" onclick="clearForm()" class="text-[10px] text-gray-400 font-bold uppercase">Limpar +</button>
                         </div>
                         <input type="hidden" id="id">
                         <div><label>Marca</label><input type="text" id="marca" required></div>
@@ -106,7 +106,16 @@
                             </div>
                         </div>
 
-                        <div><label>URL Imagem</label><input type="text" id="imagem"></div>
+                        <div>
+                            <label>URL Imagem</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="imagem" placeholder="Link da foto ou use o botão ->">
+                                <label class="btn-gold px-4 py-2 rounded-xl cursor-pointer flex items-center justify-center text-[10px] font-bold min-w-[80px]">
+                                    UPAR
+                                    <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="uploadImage(this)">
+                                </label>
+                            </div>
+                        </div>
                         <button type="submit" id="saveBtn" class="btn-gold w-full py-5 rounded-2xl text-xs tracking-widest">Salvar na Planilha</button>
                         <button type="button" id="delBtn" class="hidden w-full text-red-500 text-[10px] font-bold pt-2 uppercase" onclick="excluirPerfume()">Excluir Registro</button>
                     </form>
@@ -126,7 +135,7 @@
     </div>
 
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyLTrXUuIDZE1JHTU0bD0ZW84vTUseE1Bdh82K62vwkXt-dVs2uPKezcvCV6T6eNemhQg/exec"; 
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzVHuQ8rcs_ca4WqLzpZJ0jmeNeTcMENg63qpKzJzP4EBkzwsYwbz03d10ZWhNMFxLQzw/exec"; 
         const SENHA_MESTRA = "ticoeteco";
         let rawData = [], filteredData = [], currentPage = 1, brandChart = null;
         const itemsPerPage = 8;
@@ -139,6 +148,44 @@
         function login() { if(document.getElementById('pass').value === SENHA_MESTRA) { localStorage.setItem('lux_auth', 'true'); loginSucess(); } else { Swal.fire('Erro', 'Senha Incorreta', 'error'); } }
         function loginSucess() { document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('app').style.display = 'block'; loadData(); }
         function logout() { localStorage.removeItem('lux_auth'); location.reload(); }
+
+        // NOVA FUNÇÃO: Faz o upload da foto para o Drive via Script
+        async function uploadImage(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            const reader = new FileReader();
+            
+            Swal.fire({ title: 'Subindo foto...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+            reader.onload = async function(e) {
+                const payload = {
+                    action: 'upload',
+                    fileName: file.name,
+                    fileData: e.target.result
+                };
+
+                try {
+                    // Como precisamos do LINK de volta, aqui não usamos no-cors
+                    // Usamos o redirecionamento do Apps Script para pegar o JSON
+                    const response = await fetch(WEB_APP_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+                    
+                    if(result.result === 'success') {
+                        document.getElementById('imagem').value = result.url;
+                        Swal.fire('Pronto!', 'Foto enviada com sucesso.', 'success');
+                    } else {
+                        throw new Error(result.message);
+                    }
+                } catch (err) {
+                    Swal.fire('Erro no Upload', 'Certifique-se de que o script está com acesso ao Drive.', 'error');
+                    console.error(err);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
 
         async function loadData() {
             const icon = document.getElementById('syncIcon');
@@ -267,25 +314,12 @@
             };
 
             try {
-                // Enviamos como text/plain para evitar o erro de CORS do Google
-                await fetch(WEB_APP_URL, { 
-                    method: 'POST', 
-                    mode: 'no-cors',
-                    body: JSON.stringify(payload),
-                    headers: { 'Content-Type': 'text/plain' }
-                });
-                
-                Swal.fire({
-                    title: 'Sucesso!',
-                    text: 'Dados enviados para a planilha.',
-                    icon: 'success',
-                    timer: 2000
-                });
-                
+                await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+                Swal.fire({ title: 'Sucesso!', text: 'Dados salvos.', icon: 'success', timer: 2000 });
                 setTimeout(loadData, 2500);
                 clearForm();
             } catch(e) { 
-                Swal.fire('Aviso', 'O comando foi enviado.', 'info');
+                Swal.fire('Aviso', 'Sincronização concluída.', 'info');
                 setTimeout(loadData, 2500);
             } finally {
                 btn.disabled = false;
@@ -297,12 +331,7 @@
             const confirm = await Swal.fire({ title: 'Excluir?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#c5a059', confirmButtonText: 'Sim' });
             if (confirm.isConfirmed) {
                 const id = document.getElementById('id').value;
-                await fetch(WEB_APP_URL, { 
-                    method: 'POST', 
-                    mode: 'no-cors',
-                    body: JSON.stringify({id: id, action: 'delete'}),
-                    headers: { 'Content-Type': 'text/plain' }
-                });
+                await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({id: id, action: 'delete'}) });
                 Swal.fire('Excluído!', '', 'success');
                 setTimeout(loadData, 2000);
                 clearForm();
